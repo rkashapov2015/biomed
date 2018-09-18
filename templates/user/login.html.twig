@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello!{% endblock %}
+
+{% block body %}
+<style>
+.error { color: #fa5555; }
+</style>
+
+<div class="container">
+
+    <div class="row">
+        <div class="form-block">
+            <div class="row">
+                <form action="{{ path('login') }}" method="POST">
+                    <div class="row text-center">
+                        <h1>Войти</h1>
+                    </div>
+                    {% if error %}
+                        <span class="error">{{ error.messageKey }}</span>
+                    {% endif %}
+                    <div class="row">
+                        <label>Логин</label>
+                        <input class="u-full-width" name="_username" value="{{ last_username }}" type="text">
+                    </div>
+                    <div class="row">
+                        <label>Пароль</label>
+                        <input class="u-full-width" name="_password" type="password">
+                    </div>
+                    <div class="row text-center">
+                        <button type="submit" class="button button-primary">Войти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

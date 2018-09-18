@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            <link href="{{ '/css/normalize.css' }}" rel="stylesheet" />
+            <link href="{{ '/css/skeleton.css' }}" rel="stylesheet" />
+            <link href="{{ '/css/style.css' }}" rel="stylesheet" />
+        {% endblock %}
+
+    </head>
+    <body>
+        {%  include 'top-bar.html.twig' %}
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

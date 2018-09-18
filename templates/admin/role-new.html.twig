@@ -1,0 +1,27 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Новая роль{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2>Новая роль</h2>
+        <div class="row">
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            <div class="">
+                {{ form_label(form.name, 'Название роли') }}
+                {{ form_errors(form.name) }}
+                {{ form_widget(form.name) }}
+                {{ form_help(form.name) }}
+            </div>
+            <div class="">
+                {{ form_label(form.description, 'Описание роли') }}
+                {{ form_errors(form.description) }}
+                {{ form_widget(form.description) }}
+                {{ form_help(form.description) }}
+            </div>
+
+        {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

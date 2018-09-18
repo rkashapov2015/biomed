@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello {{ controller_name }}!{% endblock %}
+
+{% block body %}
+<style>
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="form-block">
+            <div class="row">
+                <div class="row text-center">
+                    <h1>Войти</h1>
+                </div>
+                <div class="row">
+                    <label>Логин</label>
+                    <input class="u-full-width" name="login" type="text">
+                </div>
+                <div class="row">
+                    <label>Пароль</label>
+                    <input class="u-full-width" name="password" type="password">
+                </div>
+                <div class="row text-center">
+                    <button class="button button-primary">Войти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

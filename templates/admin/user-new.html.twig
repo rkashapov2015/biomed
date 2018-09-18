@@ -1,0 +1,37 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Новая пользователь{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2>Новая роль</h2>
+        <div class="row">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            <div class="row">
+                <div class="six columns">
+                    {{ form_label(form.first_name, 'Имя') }}
+                    {{ form_widget(form.first_name, {'attr': {'class': 'u-full-width'}}) }}
+                </div>
+                <div class="six columns">
+                    {{ form_label(form.last_name, 'Фамилия') }}
+                    {{ form_widget(form.last_name, {'attr': {'class': 'u-full-width'}}) }}
+                </div>
+            </div>
+            <div class="row">
+                {{ form_label(form.email, 'Эл. почта') }}
+                {{ form_widget(form.email, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.password, 'Пароль') }}
+                {{ form_widget(form.password, {'attr': {'class': 'u-full-width'}}) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.role, 'Роль') }}
+                {{ form_widget(form.role, {'attr': {'class': 'u-full-width', 'multiple': 'multiple'}}) }}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
