@@ -11,6 +11,11 @@
                 <li>
                     <a href="{{ path('reports') }}">Отчеты</a>
                 </li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li>
+                        <a href="{{ path('admin') }}">Страница администратора</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         <div class="six columns">
