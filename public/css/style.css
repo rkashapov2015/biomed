@@ -71,3 +71,8 @@ ul.breadcrumb > li > a, ul.breadcrumb > li > span {
     padding: 10px 15px;
     background: #ddd;
 }
+
+.dark {
+    background-color: #222;
+    color: #eee;
+}

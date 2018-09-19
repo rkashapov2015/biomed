@@ -109,7 +109,7 @@ class AdminController extends AbstractController
             ];
             $result = $this->getDoctrine()->getRepository(User::class)->create($_POST);
             if ($result) {
-                $response_array['redirect_url'] = '/admin/user/list';
+                $response_array['redirect_url'] = '/admin/user';
             } else {
                 $response_array['error'] = 1;
                 $response_array['message'] = 'Не удалось создать пользователя';
