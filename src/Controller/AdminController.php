@@ -8,6 +8,8 @@ use App\Form\RoleType;
 use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
@@ -23,10 +25,28 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/role/new", name="role_new")
+     * @Route("/admin/role", name="role-list")
+     */
+    public function roleList() {
+
+        $roles = $this->getDoctrine()->getRepository(Role::class)->findAll();
+
+        return $this->render('admin/role-list.html.twig', [
+            'roles' => $roles
+        ]);
+    }
+
+    /**
+     * @Route("/admin/view/{id}", name="role-view")
+     */
+    public function roleView() {
+
+    }
+
+    /**
+     * @Route("/admin/role/new", name="role-new")
      */
     public function createRole(Request $request) {
-
 
         $role = new Role();
         $role->setName('');
@@ -55,28 +75,54 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/user/new", name="user_new")
+     * @Route("/admin/user", name="user-list")
+     */
+    public function userList(Request $request) {
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        return $this->render('admin/user-list.html.twig', [
+            'users' => $users
+        ]);
+    }
+
+    /**
+     * @Route("/admin/user/view/{id}", name="user-view")
+     */
+    public function userView(Request $request, $id) {
+        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+        if (!$user) {
+            throw new NotFoundHttpException('Пользователь не найден');
+        }
+        return $this->render('admin/user-view.html.twig', [
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * @Route("/admin/user/new", name="user-new", methods={"GET", "POST"})
      */
     public function createUser(Request $request) {
-        $user = new User();
 
-        $form = $this->createForm(UserType::class, $user);
+        if ($request->isXmlHttpRequest()) {
 
-        $form->handleRequest($request);
+            $response_array = [
+                'error' => 0,
+            ];
+            $result = $this->getDoctrine()->getRepository(User::class)->create($_POST);
+            if ($result) {
+                $response_array['redirect_url'] = '/admin/user/list';
+            } else {
+                $response_array['error'] = 1;
+                $response_array['message'] = 'Не удалось создать пользователя';
+            }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $user = $form->getData();
-            $user->setCreatedAt((new \DateTime()));
-            $user->setUpdatedAt((new \DateTime()));
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
+            //return $this->redirectToRoute('user-list');
+            return new Response(json_encode($response_array));
         }
+
+        $roles = $this->getDoctrine()->getRepository(Role::class)->findAll();
+
         return $this->render('admin/user-new.html.twig',[
-            'form' => $form->createView()
+            'roles' => $roles
         ]);
     }
 

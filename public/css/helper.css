@@ -1,0 +1,151 @@
+/* 
+    Created on : 22.01.2018, 12:21:11
+    Author     : rinat
+*/
+.waiting-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+.waiting-block {
+    width: 150px;
+    height: 75px;
+    text-align: center;
+    margin: 0 auto;
+    position: relative;
+    top: 40%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px rgba(0,0,0, 0.9);
+    border: 2px solid #ddd;
+}
+.waiting-icon {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto;
+    background: url('/theme_images/loader.gif');
+}
+
+.form-control-dms, .form-control-small {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    height: 35px;
+    line-height: 1.34;
+    margin-top: 0;
+    margin-bottom: 5px;
+    vertical-align: top;
+    display: block;
+    width: 100%;
+    position: relative;
+}
+
+.form-control-small {
+    font-size: 10px;
+    height: 34px;
+    padding: 5px 9px;
+}
+.form-group-small {
+    margin-bottom: 10px;
+}
+.form-group-small label {
+    font-size: 12px;
+}
+.has-error .form-control-dms, .has-error .form-control-small {
+    border-color: #990000;
+    background-color: #e39595;
+    color: #990000;
+    
+}
+/*.dropdownlist-control*/
+select.form-control-dms {
+    background: url(/theme_images/down-button.png);
+    background-position: 95% 50%;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+select.form-control-small {
+    background: url(/theme_images/down-button.png);
+    background-position: 95% 50%;
+    /*background-size: 10%;*/
+    background-repeat: no-repeat;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+select.form-control-small:focus, select.form-control-small:hover {
+    border: 1px solid green;
+}
+textarea.form-control-small {
+    resize: vertical;
+    height: auto;
+}
+.smalltext {
+    font-size: 12px;
+}
+.waiting {
+    position: relative;
+}
+.waiting:after {
+    position: absolute;
+    top: 41px;
+    right: 26px;
+    width: 15px;
+    height: 15px;
+    background: url(/theme_images/loader.gif);
+    content: "";
+    display: block;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+.popup-message {
+    position: fixed;
+    top: 60px;
+    left: 40%;
+    right: 40%;
+    background-color: #4caf50;
+    color: #fff;
+    padding: 20px;
+    font-size: 16px;
+    animation: fadeIn 1s;
+    text-align: center;
+    z-index: 1060;
+}
+
+.popup-message.error {
+    background-color: #af4c50;
+}
+
+.small-popup-dialog {
+    position: absolute;
+    width: 400px;
+    min-height: 150px;
+    padding: 40px 10px 10px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 1px 1px 10px #000;
+    z-index: 5000;
+}
+.small-popup-dialog > .btn-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 9px;
+    padding: 5px;
+    color: #fff;
+}
+.btn-marg {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.fixed-hor-resize {
+    resize: vertical;
+}

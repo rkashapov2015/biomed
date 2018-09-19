@@ -1,0 +1,33 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Пользователи{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <tr class="row">
+            <table class="u-full-width">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Описание</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            {% for role in roles %}
+                <tr>
+                    <td>{{ role.id }}</td>
+                    <td>{{ role.getName() }}</td>
+                    <td>{{ role.getDescription() }}</td>
+
+                    <td>
+                        <a href="{{ path('role-view', {'id': role.id}) }}" class="button">Посмотреть</a>
+                    </td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

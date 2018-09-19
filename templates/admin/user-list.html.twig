@@ -1,0 +1,39 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Пользователи{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <a href="{{ path('user-new') }}">Создать пользователя</a>
+        </div>
+        <div class="row">
+            <table class="u-full-width">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Логин</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Статус</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.getFirstName() }}</td>
+                    <td>{{ user.getLastName() }}</td>
+                    <td>{{ user.getStatus() }}</td>
+                    <td>
+                        <a href="{{ path('user-view', {'id': user.id}) }}" class="button">Посмотреть</a>
+                    </td>
+                </tr>
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

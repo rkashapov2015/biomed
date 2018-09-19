@@ -1,37 +1,59 @@
-{% extends 'dashboard.html.twig' %}
+{% extends 'admin.html.twig' %}
 
 {% block title %}Новая пользователь{% endblock %}
 
 {% block body %}
     <div class="container">
-        <h2>Новая роль</h2>
-        <div class="row">
-            {{ form_start(form) }}
-            {{ form_errors(form) }}
-
+        <h2>Новый пользователь</h2>
+        <form  method="POST" id="formUserNew">
             <div class="row">
-                <div class="six columns">
-                    {{ form_label(form.first_name, 'Имя') }}
-                    {{ form_widget(form.first_name, {'attr': {'class': 'u-full-width'}}) }}
-                </div>
-                <div class="six columns">
-                    {{ form_label(form.last_name, 'Фамилия') }}
-                    {{ form_widget(form.last_name, {'attr': {'class': 'u-full-width'}}) }}
-                </div>
+                <label>Имя</label>
+                <input type="text" name="first_name" class="u-full-width" required>
             </div>
             <div class="row">
-                {{ form_label(form.email, 'Эл. почта') }}
-                {{ form_widget(form.email, {'attr': {'class': 'u-full-width'}}) }}
+                <label>Фамилия</label>
+                <input type="text" name="last_name" class="u-full-width" required>
             </div>
             <div class="row">
-                {{ form_label(form.password, 'Пароль') }}
-                {{ form_widget(form.password, {'attr': {'class': 'u-full-width'}}) }}
+                <label>Эл. почта</label>
+                <input type="email" name="email" class="u-full-width" required>
             </div>
             <div class="row">
-                {{ form_label(form.role, 'Роль') }}
-                {{ form_widget(form.role, {'attr': {'class': 'u-full-width', 'multiple': 'multiple'}}) }}
+                <label>Пароль</label>
+                <input type="password" name="password" class="u-full-width" required>
             </div>
-            {{ form_end(form) }}
-        </div>
+            <div class="row">
+                <label>Роль</label>
+                <select name="role" class="u-full-width">
+                    {% for role in roles %}
+                        <option value="{{ role.id }}">{{ role.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row">
+                <button type="submit" id="submitButton" class="button button-primary">Создать</button>
+            </div>
+        </form>
     </div>
+    <script>
+        (function (d, w) {
+            var button = d.getElementById('submitButton');
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                var formTag = d.getElementById('formUserNew');
+                var frm = new FormData(formTag);
+                showWaiting(d.body);
+                sendData(formTag.action, frm, function (data) {
+                    hideWaiting(d.body);
+                    var object = JSON.parse(data);
+                    if (object.hasOwnProperty('message')) {
+                        showMessage(object.message, object.error);
+                    }
+                    if (object.hasOwnProperty('redirect_url')) {
+                        w.location.replace(object.redirect_url);
+                    }
+                });
+            })
+        })(document, window)
+    </script>
 {% endblock %}

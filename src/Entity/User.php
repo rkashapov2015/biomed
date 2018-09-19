@@ -226,11 +226,16 @@ class User implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        return [
+        /*return [
             'ROLE_USER'
-        ];
-        //$em = $this->getEntityManager();
-        //$query = $em->createQuery('SELECT r FROM App\Entity\Role r JOIN u');
+        ];*/
+        $roles_array = [];
+        if ($this->role) {
+            foreach ($this->role->toArray() as $roleObject) {
+                $roles_array[] = $roleObject->getName();
+            }
+        }
+        return $roles_array;
     }
 
     public function getPassword(): ?string

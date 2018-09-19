@@ -1,0 +1,30 @@
+<header class="header">
+    <div class="row">
+        <div class="six columns">
+            <ul>
+                <li>
+                    <a href="{{ path('monitoring') }}">Мониторинг</a>
+                </li>
+                <li>
+                    <a href="{{ path('user-list') }}">Пользователи</a>
+                </li>
+                <li>
+                    <a href="{{ path('role-list') }}">Роли</a>
+                </li>
+            </ul>
+        </div>
+        <div class="six columns">
+            <div class="row">
+                <div class="six columns">&nbsp;</div>
+                <div class="six columns">
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <span class="top-bar-element"> Здравствуйте, {{ app.user.username }}</span>
+                    {% endif %}
+                    <span class="top-bar-element">
+                    <a href="{{ path('logout') }}">Выйти</a>
+                </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
