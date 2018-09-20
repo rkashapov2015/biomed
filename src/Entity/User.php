@@ -304,4 +304,17 @@ class User implements UserInterface, \Serializable
 
         return $this;
     }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updateDates() {
+        $dt = new \DateTime();
+        if ($this->getCreatedAt() == null) {
+            $this->setCreatedAt($dt);
+        }
+        $this->setUpdatedAt($dt);
+
+    }
 }

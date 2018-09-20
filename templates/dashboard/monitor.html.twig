@@ -1,0 +1,122 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Мониторинг звонков{% endblock %}
+
+{% block body %}
+    <style>
+        .queue-element {
+            display: block;
+        }
+        .queue-element:before, .queue-element:after,
+        .queue-element-phones:before, .queue-element-phones:after
+        {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        .queue-element-name {
+            width: 100%;
+        }
+        .queue-element-phones {
+
+        }
+
+        .phone-element {
+            float: left;
+            padding: 25px 20px;
+            background-color: #444444;
+            color: #eee;
+            width: 100px;
+            height: 50px;
+            margin-bottom: 4px;
+        }
+
+        .phone-element:first-child,.phone-element + .phone-element {
+            margin-right: 4px;
+        }
+
+        .available {
+            background-color: #44bb44;
+            color: #333;
+        }
+        .busy {
+            background-color: #ff4444;
+            color: #333;
+        }
+        .paused {
+            background-color: #ffdd00;
+        }
+
+    </style>
+    <div class="container">
+        <div class="row" id="monitorData"></div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+
+    <script>
+        (function (d, w) {
+            var monitorDataTag = d.getElementById('monitorData');
+            var dataMonitor = '{{ data|raw }}';
+            //console.log(dataMonitor);
+            //dataMonitor = escapeHtml(dataMonitor);
+            //dataMonitor = _.unescape(dataMonitor);
+            //console.log(dataMonitor);
+            var objectMonitor = {};
+            if (dataMonitor) {
+                objectMonitor = JSON.parse(dataMonitor);
+                if (objectMonitor.hasOwnProperty('queue')) {
+                    var root = objectMonitor.queue;
+                    for (var queueName in root) {
+                        console.log(root[queueName]);
+                        var queueNode = createQueueElement(queueName, root[queueName]);
+                        monitorDataTag.appendChild(queueNode);
+                    }
+                }
+            }
+
+            function createQueueElement(name, data) {
+                var phones = d.createDocumentFragment();
+
+                for (phoneNumber in data) {
+                    phones.appendChild(createPhoneElement(phoneNumber, data[phoneNumber]));
+                }
+
+                return el ('div', {class: 'queue-element'}, [
+                    el ('div', {class: 'queue-element-name'}, name),
+                    el ('div', {class: 'queue-element-phones'}, [
+                        phones
+                    ])
+                ]);
+            }
+
+            function createPhoneElement(phone, statuses) {
+
+                var classes = ['phone-element'];
+                classes.push(getClassByStatus(statuses));
+
+                var options = {class: classes.join(' ')};
+
+                return el('div', options, phone);
+            }
+
+            function getClassByStatus(statuses) {
+                if (statuses.indexOf('Unavailable') > -1) {
+                    return 'unavailable';
+                }
+                if (statuses.indexOf('Not in use') > -1) {
+                    return 'available';
+                }
+                if (statuses.indexOf('Paused') > -1) {
+                    return 'paused';
+                }
+                if (statuses.indexOf('In use') > -1) {
+                    return 'busy';
+                }
+                return '';
+            }
+
+        }) (document, window);
+    </script>
+{% endblock %}

@@ -33,4 +33,13 @@ class Helper
 
         return $newstr;
     }
+
+    public static function getJsonData($string) {
+        try {
+            $data = json_decode($string, true);
+            return $data ? $data : [];
+        } catch (\Exception $ex) {
+            return [];
+        }
+    }
 }

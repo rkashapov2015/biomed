@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Role;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -26,9 +27,20 @@ class RoleFixture extends Fixture
             $role->setUpdatedAt($dt);
 
             $manager->persist($role);
-
             $manager->flush();
         }
 
+
+        $user = $manager->getRepository(User::class)->find(1);
+        if ($user) {
+            $roles = $manager->getRepository(Role::class)->findAll();
+
+            foreach ($roles as $role) {
+                $user->addRole($role);
+            }
+
+            $manager->persist($user);
+            $manager->flush();
+        }
     }
 }

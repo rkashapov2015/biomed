@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Component\AsteriskMonitor;
+use App\Component\Helper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -18,7 +20,13 @@ class DashboardController extends AbstractController
      * @Route("/dashboard/monitoring", name="monitoring")
      */
     public function monitoring() {
-        return $this->render('dashboard/index.html.twig', []);
+
+        $monitor = new AsteriskMonitor($this->getDoctrine());
+        $data = $monitor->getMonitorData();
+
+        return $this->render('dashboard/monitor.html.twig', [
+            'data' => $data
+        ]);
     }
 
     /**
