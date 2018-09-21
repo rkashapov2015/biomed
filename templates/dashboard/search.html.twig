@@ -1,0 +1,158 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Мониторинг звонков{% endblock %}
+
+{% block body %}
+    <style>
+        .pika-title >.pika-label {
+            border: 1px solid #aaa;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            margin-right: 1px;
+        }
+
+        .pika-title >.pika-label::after
+        {
+            content: "⇩";
+            font-size: 12px;
+            padding-left: 3px;
+            top: 1px;
+            position: relative;
+            color: #999;
+        }
+    </style>
+    <div class="container">
+        <form id="formSearch">
+            <div class="row">
+                <div class="three columns">
+                    <label>Время звонка:</label>
+                </div>
+                <div class="nine columns">
+                    <div class="row">
+                        <div class="six columns">
+                            <div class="row">
+                                <div class="three columns">
+                                    <label>От:</label>
+                                </div>
+                                <div class="nine columns">
+                                    <input id="startDate" name="start_date" type="text" class="u-full-width">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="six columns">
+                            <div class="row">
+                                <div class="three columns">
+                                    <label>До:</label>
+                                </div>
+                                <div class="nine columns">
+                                    <input id="endDate" name="end_date" type="text" class="u-full-width">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="three columns">
+                    <label>Направление:</label>
+                </div>
+                <div class="nine columns">
+                    <label class="inline">
+                        <input type="radio" name="direction" value="incoming">
+                        <span class="label-body">Входящие</span>
+                    </label>
+                    <label class="inline">
+                        <input type="radio" name="direction" value="outgoing">
+                        <span class="label-body">Исходящие</span>
+                    </label>
+                    <label class="inline">
+                        <input type="radio" name="direction" value="any" checked>
+                        <span class="label-body">Любое направление</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="three columns">
+                    <label>По номеру:</label>
+                </div>
+                <div class="nine columns">
+                    <input class="" type="text" name="phone">
+                </div>
+            </div>
+            <div class="row">
+                <div class="three columns">
+                    <label>По оператору:</label>
+                </div>
+                <div class="nine columns">
+                    <input class="" type="text" name="operator">
+                </div>
+            </div>
+            <div class="row">
+                <div class="three columns">
+                    <label>По статусу:</label>
+                </div>
+                <div class="nine columns">
+                    <select name="status">
+                        <option value="answered">Отвеченные</option>
+                        <option value="no_answered">Не отвеченные</option>
+                        <option value="any">Любая причина</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="three columns">&nbsp;</div>
+                <div class="nine columns">
+                    <button id="submitButton"><i data-icon="#" class="icon"></i>Поиск звонков</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <hr>
+    <div class="container">
+        <div class="row" id="resultData"></div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        (function (d, w) {
+            var formSearch = d.getElementById('formSearch');
+            var startDate = d.getElementById('startDate');
+            var endDate = d.getElementById('endDate');
+            var buttonSubmit = d.getElementById('submitButton');
+
+            var strDate = moment().format('D.MM.YYYY');
+            initDatePicker(startDate);
+            startDate.value = strDate;
+            initDatePicker(endDate);
+            endDate.value = strDate;
+
+            buttonSubmit.addEventListener('click', function (e) {
+                e.preventDefault();
+                var form = new FormData(formSearch);
+                for (var [k,v] of form) {
+                    console.log(k, v);
+                }
+            });
+
+            function initDatePicker(inputNode) {
+                picker = new Pikaday({
+                    field: inputNode,
+                    firstDay: 1,
+                    format: 'DD.MM.YYYY',
+                    //yearRange: [minYear, maxYear],
+                    defaultDate: strDate,
+                    i18n: {
+                        previousMonth : 'Назад',
+                        nextMonth     : 'Вперед',
+                        months        : ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                        weekdays      : ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
+                        weekdaysShort : ['Вс','Пн','Вт','Ср','Чт','Пт','Сб']
+                    }
+                });
+            }
+
+        })(document, window);
+    </script>
+{% endblock %}

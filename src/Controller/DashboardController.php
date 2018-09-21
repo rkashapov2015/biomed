@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Component\AsteriskMonitor;
 use App\Component\Helper;
+use App\Entity\QueueResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,11 +20,13 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/monitoring", name="monitoring")
      */
-    public function monitoring() {
+    public function monitoring(AsteriskMonitor $monitor) {
 
-        $monitor = new AsteriskMonitor($this->getDoctrine());
+        //$monitor = new AsteriskMonitor($this->getDoctrine());
+
+        $this->getDoctrine()->getRepository(QueueResult::class)->getDataFromAsterisk();
+
         $data = $monitor->getMonitorData();
-
         return $this->render('dashboard/monitor.html.twig', [
             'data' => $data
         ]);
@@ -33,7 +36,7 @@ class DashboardController extends AbstractController
      * @Route("/dashboard/search", name="search")
      */
     public function search() {
-        return $this->render('dashboard/index.html.twig', []);
+        return $this->render('dashboard/search.html.twig', []);
     }
 
     /**

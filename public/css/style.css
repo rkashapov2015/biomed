@@ -12,9 +12,16 @@ html, body {
 .text-center {
     text-align: center;
 }
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
 
 .header {
-
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 .header:before, .header:after, .header ul:before, .header ul:after {
     content: '';
@@ -71,8 +78,16 @@ ul.breadcrumb > li > a, ul.breadcrumb > li > span {
     padding: 10px 15px;
     background: #ddd;
 }
-
 .dark {
     background-color: #222;
     color: #eee;
+}
+label.inline {
+    display: inline-block;
+    margin-right: 10px;
+    min-width: 130px;
+}
+button > i {
+    margin-left: 2px;
+    margin-right: 2px;
 }

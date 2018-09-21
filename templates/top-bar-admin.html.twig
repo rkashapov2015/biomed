@@ -15,8 +15,8 @@
         </div>
         <div class="six columns">
             <div class="row">
-                <div class="six columns">&nbsp;</div>
-                <div class="six columns">
+                <div class="four columns">&nbsp;</div>
+                <div class="eight columns text-right">
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <span class="top-bar-element"> Здравствуйте, {{ app.user.username }}</span>
                     {% endif %}

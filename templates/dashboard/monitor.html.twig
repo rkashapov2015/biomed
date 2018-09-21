@@ -30,6 +30,7 @@
             width: 100px;
             height: 50px;
             margin-bottom: 4px;
+            text-align: center;
         }
 
         .phone-element:first-child,.phone-element + .phone-element {
@@ -46,6 +47,7 @@
         }
         .paused {
             background-color: #ffdd00;
+            color: #333;
         }
 
     </style>
@@ -54,15 +56,10 @@
     </div>
 {% endblock %}
 {% block javascripts %}
-
     <script>
         (function (d, w) {
             var monitorDataTag = d.getElementById('monitorData');
             var dataMonitor = '{{ data|raw }}';
-            //console.log(dataMonitor);
-            //dataMonitor = escapeHtml(dataMonitor);
-            //dataMonitor = _.unescape(dataMonitor);
-            //console.log(dataMonitor);
             var objectMonitor = {};
             if (dataMonitor) {
                 objectMonitor = JSON.parse(dataMonitor);
@@ -102,15 +99,16 @@
             }
 
             function getClassByStatus(statuses) {
+                if (statuses.indexOf('paused') > -1) {
+                    return 'paused';
+                }
                 if (statuses.indexOf('Unavailable') > -1) {
                     return 'unavailable';
                 }
                 if (statuses.indexOf('Not in use') > -1) {
                     return 'available';
                 }
-                if (statuses.indexOf('Paused') > -1) {
-                    return 'paused';
-                }
+
                 if (statuses.indexOf('In use') > -1) {
                     return 'busy';
                 }

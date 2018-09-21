@@ -10,7 +10,6 @@ namespace App\Component;
 
 
 use App\Entity\CommonParam;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 class AsteriskMonitor
