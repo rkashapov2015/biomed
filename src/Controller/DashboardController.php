@@ -6,6 +6,8 @@ use App\Component\AsteriskMonitor;
 use App\Component\Helper;
 use App\Entity\QueueResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
@@ -20,13 +22,20 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/monitoring", name="monitoring")
      */
-    public function monitoring(AsteriskMonitor $monitor) {
+    public function monitoring(AsteriskMonitor $monitor, Request $request) {
 
         //$monitor = new AsteriskMonitor($this->getDoctrine());
 
-        $this->getDoctrine()->getRepository(QueueResult::class)->getDataFromAsterisk();
+        $data = $this->getDoctrine()->getRepository(QueueResult::class)->getDataFromAsterisk();
 
-        $data = $monitor->getMonitorData();
+        if ($request->isXmlHttpRequest()) {
+
+            return new JsonResponse([
+                'data' => $data
+            ]);
+        }
+
+        //$data = $monitor->getMonitorData();
         return $this->render('dashboard/monitor.html.twig', [
             'data' => $data
         ]);
@@ -35,7 +44,13 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/search", name="search")
      */
-    public function search() {
+    public function search(Request $request) {
+
+        if ($request->isXmlHttpRequest()) {
+
+            return new JsonResponse($_POST);
+        }
+
         return $this->render('dashboard/search.html.twig', []);
     }
 

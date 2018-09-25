@@ -21,94 +21,140 @@
             position: relative;
             color: #999;
         }
+        .panel-search {
+            padding: 10px 0 0 0;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+        .panel-helper {
+            text-align: right;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #eeeeee;
+        }
+        .panel-helper > button {
+            padding: 5px;
+            line-height: 1;
+            font-size: 12px;
+            text-transform: lowercase;
+            margin-bottom: 0;
+            height: auto;
+            background-color: #eeeeee;
+            border-radius: 0;
+            border: none;
+            color: #0FA0CE;
+            transition: all 0.2s;
+        }
+        .panel-helper > button:hover {
+            background-color: #0FA0CE;
+            color: #eeeeee;
+        }
+        .minimized {
+            max-height: 20px;
+            overflow: hidden;
+        }
     </style>
-    <div class="container">
-        <form id="formSearch">
-            <div class="row">
-                <div class="three columns">
-                    <label>Время звонка:</label>
-                </div>
-                <div class="nine columns">
-                    <div class="row">
-                        <div class="six columns">
-                            <div class="row">
-                                <div class="three columns">
-                                    <label>От:</label>
-                                </div>
-                                <div class="nine columns">
-                                    <input id="startDate" name="start_date" type="text" class="u-full-width">
+
+    <div class="panel-search">
+        <div class="container">
+            <form id="formSearch">
+                <div class="row">
+                    <div class="three columns">
+                        <label>Время звонка:</label>
+                    </div>
+                    <div class="nine columns">
+                        <div class="row">
+                            <div class="six columns">
+                                <div class="row">
+                                    <div class="three columns">
+                                        <label>От:</label>
+                                    </div>
+                                    <div class="nine columns">
+                                        <input id="startDate" name="start_date" type="text" class="u-full-width">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="six columns">
-                            <div class="row">
-                                <div class="three columns">
-                                    <label>До:</label>
-                                </div>
-                                <div class="nine columns">
-                                    <input id="endDate" name="end_date" type="text" class="u-full-width">
+                            <div class="six columns">
+                                <div class="row">
+                                    <div class="three columns">
+                                        <label>До:</label>
+                                    </div>
+                                    <div class="nine columns">
+                                        <input id="endDate" name="end_date" type="text" class="u-full-width">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="three columns">
-                    <label>Направление:</label>
+                <div class="row">
+                    <div class="three columns">
+                        <label>Направление:</label>
+                    </div>
+                    <div class="nine columns">
+                        <label class="inline">
+                            <input type="radio" name="direction" value="incoming">
+                            <span class="label-body">Входящие</span>
+                        </label>
+                        <label class="inline">
+                            <input type="radio" name="direction" value="outgoing">
+                            <span class="label-body">Исходящие</span>
+                        </label>
+                        <label class="inline">
+                            <input type="radio" name="direction" value="any" checked>
+                            <span class="label-body">Любое направление</span>
+                        </label>
+                    </div>
                 </div>
-                <div class="nine columns">
-                    <label class="inline">
-                        <input type="radio" name="direction" value="incoming">
-                        <span class="label-body">Входящие</span>
-                    </label>
-                    <label class="inline">
-                        <input type="radio" name="direction" value="outgoing">
-                        <span class="label-body">Исходящие</span>
-                    </label>
-                    <label class="inline">
-                        <input type="radio" name="direction" value="any" checked>
-                        <span class="label-body">Любое направление</span>
-                    </label>
+                <div class="row">
+                    <div class="three columns">
+                        <label>По номеру:</label>
+                    </div>
+                    <div class="nine columns">
+                        <input class="" type="text" name="phone">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="three columns">
-                    <label>По номеру:</label>
+                <div class="row">
+                    <div class="three columns">
+                        <label>По оператору:</label>
+                    </div>
+                    <div class="nine columns">
+                        <input class="" type="text" name="operator">
+                    </div>
                 </div>
-                <div class="nine columns">
-                    <input class="" type="text" name="phone">
+                <div class="row">
+                    <div class="three columns">
+                        <label>По статусу:</label>
+                    </div>
+                    <div class="nine columns">
+                        <select name="status">
+                            <option value="answered">Отвеченные</option>
+                            <option value="no_answered">Не отвеченные</option>
+                            <option value="any">Любая причина</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="three columns">
-                    <label>По оператору:</label>
+                <div class="row">
+                    <div class="three columns">
+                        <label>Количество записей:</label>
+                    </div>
+                    <div class="nine columns">
+                        <input id="numberOfRecords" class="" type="number" name="number_of_records" value="100" min="1" max="1000" step="1">
+                    </div>
                 </div>
-                <div class="nine columns">
-                    <input class="" type="text" name="operator">
+                <div class="row">
+                    <div class="three columns">&nbsp;</div>
+                    <div class="nine columns">
+                        <button id="submitButton"><i data-icon="#" class="icon"></i>Поиск звонков</button>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="three columns">
-                    <label>По статусу:</label>
-                </div>
-                <div class="nine columns">
-                    <select name="status">
-                        <option value="answered">Отвеченные</option>
-                        <option value="no_answered">Не отвеченные</option>
-                        <option value="any">Любая причина</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="three columns">&nbsp;</div>
-                <div class="nine columns">
-                    <button id="submitButton"><i data-icon="#" class="icon"></i>Поиск звонков</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
+        <div class="panel-helper">
+            <button class="btn-helper" data-action="minimize"><i class="icon icon-basic-eye"></i></button>
+        </div>
     </div>
-    <hr>
     <div class="container">
         <div class="row" id="resultData"></div>
     </div>
@@ -120,6 +166,7 @@
             var formSearch = d.getElementById('formSearch');
             var startDate = d.getElementById('startDate');
             var endDate = d.getElementById('endDate');
+            var numberOfRecords = d.getElementById('numberOfRecords');
             var buttonSubmit = d.getElementById('submitButton');
 
             var strDate = moment().format('D.MM.YYYY');
@@ -131,10 +178,30 @@
             buttonSubmit.addEventListener('click', function (e) {
                 e.preventDefault();
                 var form = new FormData(formSearch);
-                for (var [k,v] of form) {
-                    console.log(k, v);
+                sendData(formSearch.action, form, function (e) {
+
+                })
+            });
+
+            d.addEventListener('click', function (e) {
+                var target = e.target;
+                if (target.tagName === 'I') {
+                    target = target.parentNode;
+                }
+                var action = target.getAttribute('data-action');
+                if (action) {
+                    e.preventDefault();
+                    if (action === 'minimize') {
+                        if (target.parentNode.parentNode.classList.contains('minimized')) {
+                            target.parentNode.parentNode.classList.remove('minimized');
+                        } else {
+                            target.parentNode.parentNode.classList.add('minimized');
+                        }
+                    }
                 }
             });
+
+            numberOfRecords.addEventListener('keydown', onKeydownDigit);
 
             function initDatePicker(inputNode) {
                 picker = new Pikaday({
@@ -153,6 +220,19 @@
                 });
             }
 
+            function onKeydownDigit(e) {
+
+                if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode === 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode === 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    return;
+                }
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            }
         })(document, window);
     </script>
 {% endblock %}

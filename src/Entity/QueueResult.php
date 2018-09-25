@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Events;
+
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\QueueResultRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class QueueResult
 {

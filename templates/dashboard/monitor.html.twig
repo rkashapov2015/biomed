@@ -61,14 +61,39 @@
             var monitorDataTag = d.getElementById('monitorData');
             var dataMonitor = '{{ data|raw }}';
             var objectMonitor = {};
-            if (dataMonitor) {
-                objectMonitor = JSON.parse(dataMonitor);
-                if (objectMonitor.hasOwnProperty('queue')) {
-                    var root = objectMonitor.queue;
-                    for (var queueName in root) {
-                        console.log(root[queueName]);
-                        var queueNode = createQueueElement(queueName, root[queueName]);
-                        monitorDataTag.appendChild(queueNode);
+            drawPhones();
+
+            setTimeout(refreshData, 3000);
+
+            function refreshData() {
+
+                sendData('/dashboard/monitoring', {}, function (data) {
+                    var arrayData = JSON.parse(data);
+                    if (arrayData.hasOwnProperty('data')) {
+                        var newDataMonitor = arrayData.data;
+                        if(newDataMonitor != dataMonitor) {
+                            dataMonitor = newDataMonitor;
+                            drawPhones();
+                        }
+
+                    }
+                    setTimeout(refreshData, 3000);
+                });
+
+            }
+
+            function drawPhones() {
+                if (dataMonitor) {
+                    clearNode(monitorDataTag);
+                    //console.log('drawPhones');
+                    objectMonitor = JSON.parse(dataMonitor);
+                    //console.log(objectMonitor);
+                    if (objectMonitor.hasOwnProperty('queue')) {
+                        var root = objectMonitor.queue;
+                        for (var queueName in root) {
+                            var queueNode = createQueueElement(queueName, root[queueName]);
+                            monitorDataTag.appendChild(queueNode);
+                        }
                     }
                 }
             }

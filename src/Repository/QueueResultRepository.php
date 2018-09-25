@@ -43,22 +43,26 @@ class QueueResultRepository extends ServiceEntityRepository
                 $data = $monitor->getMonitorData();
                 $model->setData($data);
                 $this->manager->getManager()->persist($model);
+                $this->getEntityManager()->flush();
+            } else {
+                $data = $model->getData();
             }
 
         } else {
             $model = new QueueResult();
             $monitor = new AsteriskMonitor($this->manager);
             $data = $monitor->getMonitorData();
-        }
-        if ($data) {
-            $model->setData($data);
-            $this->manager->getManager()->persist($model);
-            $this->getEntityManager()->persist($model);
-            return true;
 
+            $model->setData($data);
+            $this->getEntityManager()->persist($model);
+            $this->manager->getManager()->persist($model);
+            $this->getEntityManager()->flush();
         }
-        return false;
+
+        return $data;
     }
+
+
 
 //    /**
 //     * @return QueueResult[] Returns an array of QueueResult objects
