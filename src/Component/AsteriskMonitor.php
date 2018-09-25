@@ -25,7 +25,7 @@ class AsteriskMonitor
         $this->manager = $manager;
         $urlObject = $this->manager->getRepository(CommonParam::class)->findByName('urlAsterisk');
         if ($urlObject) {
-            $this->urlAsterisk = $urlObject->getValue();
+            $this->urlAsterisk = $urlObject->getValue() . '/monitor.php';
         }
 
 
