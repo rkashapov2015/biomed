@@ -38,8 +38,11 @@ class AsteriskImport
 
         if ($lastRecord) {
             $postData = [
-                'uniqueid' => $lastRecord->uniqueid
+                'uniqueid' => $lastRecord->getUniqueid()
             ];
+            print_r($postData);
+            $isPost = true;
+            echo PHP_EOL;
         }
 
         if ($this->curl->isReady()) {
@@ -47,7 +50,7 @@ class AsteriskImport
             $array = Helper::getJsonData($result);
             $this->saveData($array);
 
-            print_r($array);
+            print_r('count records: ' . count($array));
             echo PHP_EOL;
         }
     }

@@ -22,6 +22,7 @@ class AsteriskRecordRepository extends ServiceEntityRepository
     public function findLastRecord() {
         return $this->createQueryBuilder('a')
             ->orderBy('a.id', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }
