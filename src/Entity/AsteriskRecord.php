@@ -131,6 +131,11 @@ class AsteriskRecord
      */
     private $dst_cnam;
 
+    /**
+     * @ORM\Column(type="bigint")
+     */
+    private $id_asterisk;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -422,7 +427,7 @@ class AsteriskRecord
             'duration', 'billsec', 'disposition', 'amaflags',
             'accountcode', 'uniqueid', 'userfield', 'did',
             'recordingfile', 'cnum', 'cnam', 'outbound_cnum',
-            'outbound_cnam', 'dst_cnam'
+            'outbound_cnam', 'dst_cnam', 'id_asterisk'
         ];
 
         foreach ($data as $key => $value) {
@@ -435,5 +440,17 @@ class AsteriskRecord
             }
         }
         return true;
+    }
+
+    public function getIdAsterisk(): ?int
+    {
+        return $this->id_asterisk;
+    }
+
+    public function setIdAsterisk(int $id_asterisk): self
+    {
+        $this->id_asterisk = $id_asterisk;
+
+        return $this;
     }
 }

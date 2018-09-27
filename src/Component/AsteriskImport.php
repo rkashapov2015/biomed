@@ -38,7 +38,7 @@ class AsteriskImport
 
         if ($lastRecord) {
             $postData = [
-                'uniqueid' => $lastRecord->getUniqueid()
+                'id_asterisk' => $lastRecord->getIdAsterisk()
             ];
             print_r($postData);
             $isPost = true;
