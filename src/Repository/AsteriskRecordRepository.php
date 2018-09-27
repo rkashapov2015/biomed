@@ -47,10 +47,10 @@ class AsteriskRecordRepository extends ServiceEntityRepository
             switch ($direction) {
                 case 'incoming':
                     //$q->andWhere('a.dst like \'%:phone%\'');
-                    $q->andWhere($q->expr()->like('a.dst', $q->expr()->literal($phone)));
+                    $q->andWhere($q->expr()->like('a.dst', $q->expr()->literal('%' . $phone . '%')));
                     break;
                 case 'outgoing':
-                    $q->andWhere($q->expr()->like('a.src', $q->expr()->literal($phone)));
+                    $q->andWhere($q->expr()->like('a.src', $q->expr()->literal('%' . $phone . '%')));
                     //$q->andWhere('a.src like \'%:phone%\'');
 
                     break;
