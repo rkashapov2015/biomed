@@ -87,7 +87,7 @@ class AsteriskRecord
     private $accountcode;
 
     /**
-     * @ORM\Column(type="string", length=32, unique=true)
+     * @ORM\Column(type="string", length=32)
      */
     private $uniqueid;
 
