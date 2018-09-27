@@ -57,8 +57,8 @@ class AsteriskRecordRepository extends ServiceEntityRepository
                 case 'any':
                     $q->andWhere(
                         $q->expr()->orX(
-                            $q->expr()->like('a.src', $q->expr()->literal($phone)),
-                            $q->expr()->like('a.dst', $q->expr()->literal($phone))
+                            $q->expr()->like('a.src', $q->expr()->literal('%' . $phone . '%')),
+                            $q->expr()->like('a.dst', $q->expr()->literal('%' . $phone . '%'))
                         )
 
                     );
