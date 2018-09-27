@@ -168,6 +168,7 @@
             var endDate = d.getElementById('endDate');
             var numberOfRecords = d.getElementById('numberOfRecords');
             var buttonSubmit = d.getElementById('submitButton');
+            var resultData = d.getElementById('resultData');
 
             var strDate = moment().format('D.MM.YYYY');
             initDatePicker(startDate);
@@ -178,8 +179,11 @@
             buttonSubmit.addEventListener('click', function (e) {
                 e.preventDefault();
                 var form = new FormData(formSearch);
-                sendData(formSearch.action, form, function (e) {
-
+                sendData(formSearch.action, form, function (data) {
+                    var objectData = JSON.parse(data);
+                    if (objectData.hasOwnProperty('rows')) {
+                        drawData(objectData.rows);
+                    }
                 })
             });
 
@@ -233,6 +237,43 @@
                     e.preventDefault();
                 }
             }
+
+            function drawData(data) {
+                clearNode(resultData);
+
+                var rowsFragment = d.createDocumentFragment();
+
+                Array.from(data).forEach(function (value) {
+                    //console.log(value.billsec);
+                    rowsFragment.appendChild(
+                        el('tr', {}, [
+                            el ('td', {}, value.calldate ),
+                            el ('td', {}, value.src ),
+                            el ('td', {}, value.dst ),
+                            el ('td', {}, value.disposition ),
+                            el ('td', {}, value.billsec.toString() ),
+                            el ('td', {})
+                        ])
+                    );
+                });
+
+                var tableNode = el('table', {width: '100%'},
+                [
+                    el ('thead', {}, [
+                        el ('th', {}, 'Дата'),
+                        el ('th', {}, 'Src'),
+                        el ('th', {}, 'Dst'),
+                        el ('th', {}, 'Status'),
+                        el ('th', {}, 'Billsec'),
+                        el ('th', {}, 'Запись')
+                    ]),
+                    el ('tbody', {}, [
+                        rowsFragment
+                    ])
+                ]);
+                resultData.appendChild(tableNode);
+            }
+
         })(document, window);
     </script>
 {% endblock %}

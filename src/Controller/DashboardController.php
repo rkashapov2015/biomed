@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Component\AsteriskMonitor;
 use App\Component\Helper;
+use App\Component\RecordFinder;
 use App\Entity\QueueResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,11 +45,22 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/search", name="search")
      */
-    public function search(Request $request) {
+    public function search(Request $request, RecordFinder $finder) {
 
         if ($request->isXmlHttpRequest()) {
 
-            return new JsonResponse($_POST);
+            $result = $finder->searchRecords($_POST);
+
+            $responseData = [
+                'rows' => [],
+            ];
+            //if (!empty($result) && is_array($result)) {
+                //$responseData = ['rows' => $result];
+                $responseData = [
+                    'rows' => $result
+                ];
+            //}
+            return new JsonResponse($responseData);
         }
 
         return $this->render('dashboard/search.html.twig', []);
