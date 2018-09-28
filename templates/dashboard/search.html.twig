@@ -3,59 +3,7 @@
 {% block title %}Мониторинг звонков{% endblock %}
 
 {% block body %}
-    <style>
-        .pika-title >.pika-label {
-            border: 1px solid #aaa;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            margin-right: 1px;
-        }
-
-        .pika-title >.pika-label::after
-        {
-            content: "⇩";
-            font-size: 12px;
-            padding-left: 3px;
-            top: 1px;
-            position: relative;
-            color: #999;
-        }
-        .panel-search {
-            padding: 10px 0 0 0;
-            border-bottom: 1px solid #ddd;
-            position: relative;
-        }
-        .panel-helper {
-            text-align: right;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background-color: #eeeeee;
-        }
-        .panel-helper > button {
-            padding: 5px;
-            line-height: 1;
-            font-size: 12px;
-            text-transform: lowercase;
-            margin-bottom: 0;
-            height: auto;
-            background-color: #eeeeee;
-            border-radius: 0;
-            border: none;
-            color: #0FA0CE;
-            transition: all 0.2s;
-        }
-        .panel-helper > button:hover {
-            background-color: #0FA0CE;
-            color: #eeeeee;
-        }
-        .minimized {
-            max-height: 20px;
-            overflow: hidden;
-        }
-    </style>
-
+    <style></style>
     <div class="panel-search">
         <div class="container">
             <form id="formSearch">
@@ -261,10 +209,10 @@
                 [
                     el ('thead', {}, [
                         el ('th', {}, 'Дата'),
-                        el ('th', {}, 'Src'),
-                        el ('th', {}, 'Dst'),
-                        el ('th', {}, 'Status'),
-                        el ('th', {}, 'Billsec'),
+                        el ('th', {}, 'Отправитель'),
+                        el ('th', {}, 'Получатель'),
+                        el ('th', {}, 'Статус'),
+                        el ('th', {}, 'Длительность'),
                         el ('th', {}, 'Запись')
                     ]),
                     el ('tbody', {}, [

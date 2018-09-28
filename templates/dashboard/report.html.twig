@@ -1,0 +1,90 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Мониторинг звонков{% endblock %}
+
+{% block body %}
+    <div class="panel-search">
+        <div class="container">
+            <form id="searchForm">
+                <div class="row">
+                    <div class="two columns">
+                        <label>Период:</label>
+                    </div>
+                    <div class="ten columns">
+                        <div class="row">
+                            <div class="four columns">
+                                <input id="startDate" name="start_date" type="text" class="u-full-width text-center" placeholder=От>
+                            </div>
+                            <div class="four columns">
+                                <input id="endDate" name="end_date" type="text" class="u-full-width text-center" placeholder="До">
+                            </div>
+                            <div class="four columns">
+                                <button class="button" id="getReport">Получить отчет</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container" id="resultData"></div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        (function (d,w) {
+            var formTag = d.getElementById('searchForm');
+            var btnGetReport = d.getElementById('getReport');
+            var resultData = d.getElementById('resultData');
+
+            var startDate = d.getElementById('startDate');
+            var endDate = d.getElementById('endDate');
+
+            var strDate = moment().format('D.MM.YYYY');
+            initDatePicker(startDate);
+            startDate.value = strDate;
+            initDatePicker(endDate);
+            endDate.value = strDate;
+
+
+
+            function onKeydownDigit(e) {
+
+                if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode === 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode === 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    return;
+                }
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            }
+
+            btnGetReport.addEventListener('click', function (e) {
+                e.preventDefault();
+                var form = new FormData(formTag);
+                sendData(formTag.action, form, function (data) {
+
+                });
+            });
+
+            function initDatePicker(inputNode) {
+                picker = new Pikaday({
+                    field: inputNode,
+                    firstDay: 1,
+                    format: 'DD.MM.YYYY',
+                    defaultDate: strDate,
+                    i18n: {
+                        previousMonth : 'Назад',
+                        nextMonth     : 'Вперед',
+                        months        : ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                        weekdays      : ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
+                        weekdaysShort : ['Вс','Пн','Вт','Ср','Чт','Пт','Сб']
+                    }
+                });
+            }
+        })(document, window);
+
+    </script>
+{% endblock %}

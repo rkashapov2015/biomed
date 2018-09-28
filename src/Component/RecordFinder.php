@@ -57,8 +57,6 @@ class RecordFinder
             $result = false;
         }
 
-
-
         return $result;
     }
 }

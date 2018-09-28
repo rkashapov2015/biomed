@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\AsteriskRecord;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -106,7 +107,6 @@ class AsteriskRecordRepository extends ServiceEntityRepository
         return $q->getQuery()->getResult();
         //return $q->getQuery();
     }
-
 
 //    /**
 //     * @return AsteriskRecord[] Returns an array of AsteriskRecord objects

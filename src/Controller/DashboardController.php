@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Component\AsteriskMonitor;
-use App\Component\Helper;
-use App\Component\RecordFinder;
+use App\Component\{AsteriskMonitor, Helper, RecordFinder};
+use App\Entity\AsteriskRecord;
 use App\Entity\QueueResult;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\{JsonResponse, Request};
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
@@ -69,8 +68,20 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/reports", name="reports")
      */
-    public function reports() {
-        return $this->render('dashboard/index.html.twig', []);
+    public function reports(Request $request, RecordFinder $finder) {
+
+        if ($request->isXmlHttpRequest()) {
+
+            $rows = $finder->searchRecords($_POST);
+
+            $resultData = [];
+
+
+
+            return new JsonResponse($resultData);
+        }
+
+        return $this->render('dashboard/report.html.twig', []);
     }
 
     public function config() {

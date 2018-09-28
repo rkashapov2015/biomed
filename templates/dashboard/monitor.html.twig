@@ -85,7 +85,7 @@
             function drawPhones() {
                 if (dataMonitor) {
                     clearNode(monitorDataTag);
-                    //console.log('drawPhones');
+
                     objectMonitor = JSON.parse(dataMonitor);
                     //console.log(objectMonitor);
                     if (objectMonitor.hasOwnProperty('queue')) {
@@ -100,9 +100,10 @@
 
             function createQueueElement(name, data) {
                 var phones = d.createDocumentFragment();
+                var members = data['members'];
 
-                for (phoneNumber in data) {
-                    phones.appendChild(createPhoneElement(phoneNumber, data[phoneNumber]));
+                for (phoneNumber in members) {
+                    phones.appendChild(createPhoneElement(phoneNumber, members[phoneNumber]));
                 }
 
                 return el ('div', {class: 'queue-element'}, [
