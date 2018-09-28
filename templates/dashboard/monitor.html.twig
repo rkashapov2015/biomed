@@ -91,8 +91,11 @@
                     if (objectMonitor.hasOwnProperty('queue')) {
                         var root = objectMonitor.queue;
                         for (var queueName in root) {
-                            var queueNode = createQueueElement(queueName, root[queueName]);
-                            monitorDataTag.appendChild(queueNode);
+                            if (queueName === '0658') {
+                                var queueNode = createQueueElement(queueName, root[queueName]);
+                                monitorDataTag.appendChild(queueNode);
+                            }
+
                         }
                     }
                 }
