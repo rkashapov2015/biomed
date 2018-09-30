@@ -72,11 +72,12 @@ class DashboardController extends AbstractController
 
         if ($request->isXmlHttpRequest()) {
 
-            $rows = $finder->searchRecords($_POST);
+            //$rows = $finder->searchRecords($_POST);
+            $rows = $this->getDoctrine()->getRepository(AsteriskRecord::class)->getDataForReport($_POST);
 
-            $resultData = [];
 
-
+            //$resultData = [];
+            $resultData = $rows;
 
             return new JsonResponse($resultData);
         }

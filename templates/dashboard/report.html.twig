@@ -65,7 +65,7 @@
                 e.preventDefault();
                 var form = new FormData(formTag);
                 sendData(formTag.action, form, function (data) {
-
+                    drawReportTable(JSON.parse(data));
                 });
             });
 
@@ -83,6 +83,41 @@
                         weekdaysShort : ['Вс','Пн','Вт','Ср','Чт','Пт','Сб']
                     }
                 });
+            }
+
+            function drawReportTable(data) {
+
+                var fragment = d.createDocumentFragment();
+
+                if (data) {
+                    fragment.appendChild(el ('td'));
+                }
+
+                var table =  el ('table', {}, [
+                    el ('thead', {}, [
+                        el('th', {},  'Количество звонков'),
+                        el('th', {},  'В рабочее время'),
+                        el('th', {},  'Отработанные'),
+                        el('th', {},  'Потерянные'),
+                        el('th', {},  'Время поднятия трубки'),
+                        el('th', {},  'Средняя продолжительность разговора'),
+                        el('th', {},  'Общая продолжительность ')
+                    ]),
+                    //el ('tbody', {}, [ fragment ])
+                    el ('tbody', {}, [
+                        el ('tr', {}, [
+                            el('td', {}, data[0]['number_of_records']),
+                            el('td', {}, data[0]['work_time']),
+                            el('td', {}, data[0]['answered']),
+                            el('td', {}, data[0]['not_answered']),
+                            el('td', {}, data[0]['time_take_phone']),
+                            el('td', {}, data[0]['average_time']),
+                            el('td', {}, data[0]['summ_duration']),
+                        ])
+                    ])
+                ]);
+                clearNode(resultData);
+                resultData.appendChild(table);
             }
         })(document, window);
 
