@@ -30,6 +30,7 @@
     <div class="container" id="resultData"></div>
 {% endblock %}
 {% block javascripts %}
+    <script src="/js/Chart.bundle.min.js"></script>
     <script>
         (function (d,w) {
             var formTag = d.getElementById('searchForm');
@@ -39,7 +40,7 @@
             var startDate = d.getElementById('startDate');
             var endDate = d.getElementById('endDate');
 
-            var strDate = moment().format('D.MM.YYYY');
+            var strDate = moment().format('DD.MM.YYYY');
             initDatePicker(startDate);
             startDate.value = strDate;
             initDatePicker(endDate);
@@ -64,8 +65,27 @@
             btnGetReport.addEventListener('click', function (e) {
                 e.preventDefault();
                 var form = new FormData(formTag);
+
                 sendData(formTag.action, form, function (data) {
-                    drawReportTable(JSON.parse(data));
+                    var object = JSON.parse(data);
+
+                    clearNode(resultData);
+
+                    drawReportTable(object.stat);
+
+                    resultData.appendChild(el('canvas', { id: 'graphicCanvas'}));
+
+                    var ctx = document.getElementById("graphicCanvas").getContext('2d');
+
+                    var dataForGraphics = {
+                        labels: object.graphic.dates,
+                        lines: [
+                            {label: 'Звонки', data: object.graphic.data, color: 'rgb(153, 255, 204)', backColor: 'rgba(153, 255, 204, 0.5)'},
+                        ]
+                    };
+
+                    drawGraphic(ctx, dataForGraphics);
+
                 });
             });
 
@@ -116,8 +136,40 @@
                         ])
                     ])
                 ]);
-                clearNode(resultData);
+                //clearNode(resultData);
                 resultData.appendChild(table);
+            }
+
+            function drawGraphic(ctx, data) {
+                var lines = [];
+                Array.from(data.lines).forEach(function (value) {
+                    var line = {
+                        label: value.label,
+                        borderWidth: 1,
+                        data: value.data,
+                        borderColor: [value.color],
+                        backgroundColor: [value.backColor]
+                    };
+                    lines.push(line);
+                });
+
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: lines
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        }
+                    }
+                });
+                return myChart;
             }
         })(document, window);
 

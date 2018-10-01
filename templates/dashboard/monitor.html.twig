@@ -61,12 +61,12 @@
             var monitorDataTag = d.getElementById('monitorData');
             var dataMonitor = '{{ data|raw }}';
             var objectMonitor = {};
+
             drawPhones();
 
             setTimeout(refreshData, 3000);
 
             function refreshData() {
-
                 sendData('/dashboard/monitoring', {}, function (data) {
                     var arrayData = JSON.parse(data);
                     if (arrayData.hasOwnProperty('data')) {
@@ -75,11 +75,9 @@
                             dataMonitor = newDataMonitor;
                             drawPhones();
                         }
-
                     }
                     setTimeout(refreshData, 3000);
                 });
-
             }
 
             function drawPhones() {
@@ -143,7 +141,6 @@
                 }
                 return '';
             }
-
         }) (document, window);
     </script>
 {% endblock %}

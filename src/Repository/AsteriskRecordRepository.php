@@ -115,6 +115,7 @@ class AsteriskRecordRepository extends ServiceEntityRepository
         $dtEnd->setTime(23,59,59);
         $dtStartStr = $dtStart->format('Y.m.d H:i:s');
         $dtEndStr = $dtEnd->format('Y.m.d H:i:s');
+
         $sql = "SELECT 
         SUM(1) as number_of_records,
         SUM(CASE WHEN TIME(ar.calldate) BETWEEN CAST('7:00:00' as TIME) AND CAST('22:00:00' as TIME) THEN 1 ELSE 0 END) as 'work_time',
@@ -125,6 +126,37 @@ class AsteriskRecordRepository extends ServiceEntityRepository
         SUM(ar.duration)/60 as 'summ_duration'
         FROM biomed.asterisk_record ar
         WHERE ar.calldate BETWEEN '{$dtStartStr}' AND '{$dtEndStr}'";
+
+        $connection = $this->getEntityManager()->getConnection();
+        $stmt = $connection->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getCountRecordsforGraphic($params) {
+        $dtStart = new \DateTime($params['start_date']);
+        $dtStart->setTime(0,0,0);
+        $dtEnd = new \DateTime($params['end_date']);
+        $dtEnd->setTime(23,59,59);
+        $dtStartStr = $dtStart->format('Y.m.d H:i:s');
+        $dtEndStr = $dtEnd->format('Y.m.d H:i:s');
+
+        $sql = "
+        SELECT 
+            DATE_FORMAT(d.date, \"%d.%m.%Y\") as 'date',
+            d.number_calls
+        FROM
+        (
+            SELECT
+                DATE(ar.calldate) as 'date',
+                count(ar.uniqueid) as 'number_calls'
+            FROM biomed.asterisk_record ar
+            WHERE
+                ar.calldate BETWEEN '{$dtStartStr}' AND '{$dtEndStr}'
+            GROUP BY DATE(ar.calldate)
+        ) d
+        ORDER BY d.date ASC";
+
         $connection = $this->getEntityManager()->getConnection();
         $stmt = $connection->prepare($sql);
         $stmt->execute();
