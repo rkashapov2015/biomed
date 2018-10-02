@@ -9,6 +9,7 @@
 namespace App\Component;
 
 use App\Entity\AsteriskRecord;
+use App\Entity\AsteriskRecordProp;
 use App\Entity\CommonParam;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -67,7 +68,48 @@ class AsteriskImport
             $entityManager->persist($object);
             $entityManager->flush();
         }
+        return true;
+    }
 
+    public function getImportProp() {
+
+        $this->curl = new CurlyCurly($this->urlAsterisk  . '/export_prop.php');
+        $lastRecord = $this->manager->getRepository(AsteriskRecordProp::class)->findLastRecord();
+
+        $postData = null;
+        $isPost = false;
+
+        if ($lastRecord) {
+            $postData = [
+                'id_asterisk' => $lastRecord->getIdAsterisk()
+            ];
+            print_r($postData);
+            $isPost = true;
+            echo PHP_EOL;
+        }
+
+        if ($this->curl->isReady()) {
+            $result = $this->curl->send($postData, $isPost);
+            $array = Helper::getJsonData($result);
+            $this->saveDataProp($array);
+
+            print_r('count records: ' . count($array));
+            echo PHP_EOL;
+        }
+    }
+
+    protected function saveDataProp($data) {
+        if (!$data) {
+            return false;
+        }
+        $entityManager = $this->manager->getManager();
+        foreach($data as $row) {
+            $object = new AsteriskRecordProp();
+            $object->load($row);
+            $entityManager->persist($object);
+            $entityManager->flush();
+        }
+        return true;
     }
 
     public function getSoundByUniqueid($uniqueid) {
