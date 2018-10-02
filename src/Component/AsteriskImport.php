@@ -11,6 +11,7 @@ namespace App\Component;
 use App\Entity\AsteriskRecord;
 use App\Entity\CommonParam;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AsteriskImport
 {
@@ -24,13 +25,13 @@ class AsteriskImport
         $this->manager = $manager;
         $urlObject = $this->manager->getRepository(CommonParam::class)->findByName('urlAsterisk');
         if ($urlObject) {
-            $this->urlAsterisk = $urlObject->getValue() . '/export.php';
+            $this->urlAsterisk = $urlObject->getValue();
         }
-
-        $this->curl = new CurlyCurly($this->urlAsterisk);
     }
 
     public function getImport() {
+
+        $this->curl = new CurlyCurly($this->urlAsterisk  . '/export.php');
         $lastRecord = $this->manager->getRepository(AsteriskRecord::class)->findLastRecord();
 
         $postData = null;
@@ -67,6 +68,30 @@ class AsteriskImport
             $entityManager->flush();
         }
 
+    }
+
+    public function getSoundByUniqueid($uniqueid) {
+        $this->curl = new CurlyCurly($this->urlAsterisk  . '/records.php');
+        if (!$uniqueid) {
+            throw new NotFoundHttpException('Unique id not exist');
+        }
+        $path = '/var/spool/biomed/';
+        $filename = $uniqueid . '.wav';
+        $fullpath = $path . $filename;
+
+
+        if (file_exists($fullpath)) {
+            return $fullpath;
+        }
+
+        $result = $this->curl->send(['uniqueid' => $uniqueid ]);
+        if (strlen($result)) {
+            if (file_put_contents($fullpath, $result)) {
+                return $fullpath;
+            }
+            return $fullpath;
+        }
+        return false;
     }
 
 }

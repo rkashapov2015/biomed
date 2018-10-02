@@ -33,7 +33,7 @@ class AsteriskRecordRepository extends ServiceEntityRepository
         $q = $this->createQueryBuilder('a');
 
 
-        $q->select(['a.calldate', 'a.src', 'a.dst', 'a.billsec', 'a.disposition']);
+        $q->select(['a.id', 'a.calldate', 'a.src', 'a.dst', 'a.billsec', 'a.disposition']);
 
         $direction = 'any';
         if (!empty($params['direction'])) {

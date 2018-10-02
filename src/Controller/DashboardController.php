@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
-use App\Component\{AsteriskMonitor, Helper, RecordFinder};
+use App\Component\{AsteriskImport, AsteriskMonitor, CurlyCurly, Helper, RecordFinder};
 use App\Entity\AsteriskRecord;
 use App\Entity\QueueResult;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{JsonResponse, Request};
+use Symfony\Component\HttpFoundation\{BinaryFileResponse, JsonResponse, Request, Response};
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController
@@ -95,6 +95,28 @@ class DashboardController extends AbstractController
         }
 
         return $this->render('dashboard/report.html.twig', []);
+    }
+
+    /**
+     * @Route("/dashboard/sound", name="sound")
+     */
+    public function sound(Request $request, AsteriskImport $asteriskImport) {
+        $id = $request->get('id');
+
+        $model = $this->getDoctrine()->getRepository(AsteriskRecord::class)->findOneBy(['id' => $id]);
+
+        if (empty($model)) {
+            return new Response('');
+        }
+
+        $uniqueid = $model->getUniqueid();
+        $filePath = $asteriskImport->getSoundByUniqueid($uniqueid);
+
+        if ($filePath) {
+            return new BinaryFileResponse($filePath);
+            //return new Response($filePath);
+        }
+        return new Response('');
     }
 
     public function config() {

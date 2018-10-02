@@ -3,7 +3,7 @@
 {% block title %}Мониторинг звонков{% endblock %}
 
 {% block body %}
-    <style></style>
+    <!--<link rel="stylesheet" href="/css/audiojs.css">-->
     <div class="panel-search">
         <div class="container">
             <form id="formSearch">
@@ -106,10 +106,19 @@
     <div class="container">
         <div class="row" id="resultData"></div>
     </div>
+    <div class="fly-panel disabled" id="flypanel">
+        <div class="wrap">
+            <div class="head"><span class="show-hide-toolbar" data-action="hide" data-parent="flypanel">Скрыть</span></div>
+            <div class="body"></div>
+        </div>
+    </div>
+
 
 {% endblock %}
 {% block javascripts %}
+    <script src="/js/audiojs/audio.min.js"></script>
     <script>
+        var audioObject = null;
         (function (d, w) {
             var formSearch = d.getElementById('formSearch');
             var startDate = d.getElementById('startDate');
@@ -117,6 +126,8 @@
             var numberOfRecords = d.getElementById('numberOfRecords');
             var buttonSubmit = d.getElementById('submitButton');
             var resultData = d.getElementById('resultData');
+            var flypanel = d.getElementById('flypanel');
+
 
             var strDate = moment().format('DD.MM.YYYY');
             initDatePicker(startDate);
@@ -137,10 +148,11 @@
 
             d.addEventListener('click', function (e) {
                 var target = e.target;
-                if (target.tagName === 'I') {
+                var action = target.getAttribute('data-action');
+                if (!action && target.tagName === 'I') {
                     target = target.parentNode;
                 }
-                var action = target.getAttribute('data-action');
+                action = target.getAttribute('data-action');
                 if (action) {
                     e.preventDefault();
                     if (action === 'minimize') {
@@ -149,6 +161,33 @@
                         } else {
                             target.parentNode.parentNode.classList.add('minimized');
                         }
+                    }
+                    if (action === 'play-sound') {
+                        var body = flypanel.querySelector('.body');
+                        clearNode(body);
+                        body.appendChild(el('audio', {src: ''}));
+
+
+                        d.querySelector('audio').src = target.dataset.sound;
+                        audiojs.events.ready(function() {
+                            audioObject = audiojs.createAll();
+                        });
+
+                        flypanel.classList.remove('disabled');
+                    }
+                    if (action === 'hide') {
+                        var parentId = target.dataset.parent;
+                        var parent = d.getElementById(parentId);
+                        if (parent) {
+                            if (parent.classList.contains('hide')) {
+                                parent.classList.remove('hide');
+                                target.innerText = 'Скрыть';
+                            } else {
+                                parent.classList.add('hide');
+                                target.innerText = 'Показать';
+                            }
+                        }
+
                     }
                 }
             });
@@ -200,7 +239,9 @@
                             el ('td', {}, value.dst ),
                             el ('td', {}, value.disposition ),
                             el ('td', {}, value.billsec.toString() ),
-                            el ('td', {})
+                            el ('td', {}, [
+                                el ('a', { 'data-sound': '/dashboard/sound?id=' + value.id, 'data-action': 'play-sound', 'href': '#' }, 'Звук')
+                            ])
                         ])
                     );
                 });

@@ -142,3 +142,34 @@ button > i {
     max-height: 20px;
     overflow: hidden;
 }
+
+.fly-panel {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.fly-panel .wrap {
+    width: 460px;
+    margin: 0 auto;
+}
+.fly-panel .wrap .head {
+    text-align: right;
+}
+.body {
+
+}
+.show-hide-toolbar {
+    padding: 2px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.fly-panel.disabled .show-hide-toolbar {
+    display: none;
+}
+.fly-panel.hide > .wrap > .body {
+    display: none;
+}

@@ -41,7 +41,7 @@ class CurlyCurly {
             }
             $out = curl_exec($curl);
             if (curl_error($curl)) {
-                //(curl_error($curl));
+                //return (curl_error($curl));
                 return false;
             }
             curl_close($curl);
