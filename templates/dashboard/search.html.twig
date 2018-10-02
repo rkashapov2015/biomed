@@ -36,7 +36,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="three columns">
                         <label>Направление:</label>
                     </div>
@@ -54,7 +54,8 @@
                             <span class="label-body">Любое направление</span>
                         </label>
                     </div>
-                </div>
+                </div>-->
+                <input type="hidden" name="direction" value="incoming">
                 <div class="row">
                     <div class="three columns">
                         <label>По номеру:</label>
@@ -240,7 +241,7 @@
                             el ('td', {}, value.disposition ),
                             el ('td', {}, value.billsec.toString() ),
                             el ('td', {}, [
-                                el ('a', { 'data-sound': '/dashboard/sound?id=' + value.id, 'data-action': 'play-sound', 'href': '#' }, 'Звук')
+                                el ('a', { 'data-sound': '/dashboard/sound?id=' + value.id, 'data-action': 'play-sound', 'href': '#' }, 'Прослушать')
                             ])
                         ])
                     );
@@ -250,10 +251,10 @@
                 [
                     el ('thead', {}, [
                         el ('th', {}, 'Дата'),
-                        el ('th', {}, 'Отправитель'),
+                        el ('th', {}, 'Инициатор'),
                         el ('th', {}, 'Получатель'),
                         el ('th', {}, 'Статус'),
-                        el ('th', {}, 'Длительность'),
+                        el ('th', {}, 'Длительность, сек.'),
                         el ('th', {}, 'Запись')
                     ]),
                     el ('tbody', {}, [
