@@ -41,6 +41,11 @@ class AsteriskRecordProp
      */
     private $id_asterisk;
 
+    /**
+     * @ORM\Column(type="string", length=80)
+     */
+    private $cid_num;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -111,9 +116,7 @@ class AsteriskRecordProp
             return false;
         }
 
-        $columns = [
-             'uniqueid', 'eventtype', 'eventtime', 'peer', 'id_asterisk'
-        ];
+        $columns = ['uniqueid', 'eventtype', 'eventtime', 'peer', 'id_asterisk', 'cid_num'];
 
         foreach ($data as $key => $value) {
             if (in_array($key, $columns)) {
@@ -125,5 +128,17 @@ class AsteriskRecordProp
             }
         }
         return true;
+    }
+
+    public function getCidNum(): ?string
+    {
+        return $this->cid_num;
+    }
+
+    public function setCidNum(string $cid_num): self
+    {
+        $this->cid_num = $cid_num;
+
+        return $this;
     }
 }
