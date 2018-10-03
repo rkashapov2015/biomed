@@ -117,14 +117,20 @@ class AsteriskRecordRepository extends ServiceEntityRepository
         $dtEndStr = $dtEnd->format('Y.m.d H:i:s');
 
         $sql = "SELECT 
-        SUM(1) as number_of_records,
-        SUM(CASE WHEN TIME(ar.calldate) BETWEEN CAST('7:00:00' as TIME) AND CAST('22:00:00' as TIME) THEN 1 ELSE 0 END) as 'work_time',
-        SUM(CASE WHEN ar.disposition = 'ANSWERED' THEN 1 ELSE 0 END) as 'answered',
-        SUM(CASE WHEN ar.disposition <> 'ANSWERED' THEN 1 ELSE 0 END) as 'not_answered',
-        AVG(ar.duration - ar.billsec) as 'time_take_phone',
-        AVG(ar.billsec) as 'average_time',
-        SUM(ar.duration)/60 as 'summ_duration'
+            SUM(1) as number_of_records,
+            SUM(CASE WHEN TIME(ar.calldate) BETWEEN CAST('7:00:00' as TIME) AND CAST('22:00:00' as TIME) THEN 1 ELSE 0 END) as 'work_time',
+            SUM(CASE WHEN arpp.uniqueid is not null THEN 1 ELSE 0 END) as 'answered',
+            SUM(CASE WHEN arpp.uniqueid is null THEN 1 ELSE 0 END) as 'not_answered',
+            AVG(ar.duration - ar.billsec) as 'time_take_phone',
+            AVG(ar.billsec) as 'average_time',
+            SUM(ar.duration)/60 as 'summ_duration'
         FROM biomed.asterisk_record ar
+        LEFT JOIN (
+                SELECT arp.uniqueid
+                FROM biomed.asterisk_record_prop arp 
+                WHERE arp.eventtype = 'BRIDGE_START'
+                GROUP BY arp.uniqueid
+        ) arpp ON arpp.uniqueid = ar.uniqueid
         WHERE ar.calldate BETWEEN '{$dtStartStr}' AND '{$dtEndStr}'";
 
         $connection = $this->getEntityManager()->getConnection();
