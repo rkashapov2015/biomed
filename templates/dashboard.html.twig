@@ -13,9 +13,11 @@
         {% endblock %}
     </head>
     <body>
+        <div class="wrapper">
         {%  include 'top-bar.html.twig' %}
         {% block body %}
         {% endblock %}
+        </div>
         <script src="{{ '/js/moment-with-locales.min.js' }}"></script>
         <script src="{{ '/js/underscore-min.js' }}"></script>
         <script src="{{ '/js/helper.js' }}"></script>

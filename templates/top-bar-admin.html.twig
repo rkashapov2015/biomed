@@ -1,28 +1,30 @@
 <header class="header">
-    <div class="row">
-        <div class="six columns">
-            <ul>
-                <li>
-                    <a href="/">Главная</a>
-                </li>
-                <li>
-                    <a href="{{ path('user-list') }}">Пользователи</a>
-                </li>
-                <li>
-                    <a href="{{ path('role-list') }}">Роли</a>
-                </li>
-            </ul>
-        </div>
-        <div class="six columns">
-            <div class="row">
-                <div class="four columns">&nbsp;</div>
-                <div class="eight columns text-right">
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <span class="top-bar-element"> Здравствуйте, {{ app.user.username }}</span>
-                    {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="three columns">
+                <img src="/img/biomed.png" class="logo-img">
+            </div>
+            <div class="six columns">
+                <ul class="menu-list">
+                    <li>
+                        <a href="/">Главная</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('user-list') }}">Пользователи</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('role-list') }}">Роли</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="three columns">
+                <div class="row">
                     <span class="top-bar-element">
-                    <a href="{{ path('logout') }}">Выйти</a>
-                </span>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            Здравствуйте, {{ app.user.username }}
+                        {% endif %}
+                        <a href="{{ path('logout') }}">Выйти</a>
+                    </span>
                 </div>
             </div>
         </div>

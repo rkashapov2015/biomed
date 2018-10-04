@@ -12,10 +12,12 @@
 
     </head>
     <body>
+        <div class="wrapper">
         {%  include 'top-bar-admin.html.twig' %}
         {% block body %}{% endblock %}
         {% block javascripts %}
             <script src="{{ '/js/helper.js' }}"></script>
         {% endblock %}
+        </div>
     </body>
 </html>

@@ -6,6 +6,8 @@
     <style>
         .queue-element {
             display: block;
+            margin-top: 95px;
+            padding-left: 9px;
         }
         .queue-element:before, .queue-element:after,
         .queue-element-phones:before, .queue-element-phones:after
@@ -14,29 +16,29 @@
             display: table;
             clear: both;
         }
-
         .queue-element-name {
             width: 100%;
         }
-        .queue-element-phones {
-
-        }
+        .queue-element-phones {}
 
         .phone-element {
             float: left;
-            padding: 25px 20px;
             background-color: #444444;
             color: #eee;
-            width: 100px;
-            height: 50px;
-            margin-bottom: 4px;
+            width: 194px;
+            height: 194px;
+            margin-bottom: 10px;
             text-align: center;
+            border-radius: 20px;
+            font-size: 22px;
         }
-
+        .phone-element > span {
+            padding: 81px 47px;
+            display: inline-block;
+        }
         .phone-element:first-child,.phone-element + .phone-element {
-            margin-right: 4px;
+            margin-right: 10px;
         }
-
         .available {
             background-color: #44bb44;
             color: #333;
@@ -63,7 +65,6 @@
             var objectMonitor = {};
 
             drawPhones();
-
             setTimeout(refreshData, 3000);
 
             function refreshData() {
@@ -83,9 +84,7 @@
             function drawPhones() {
                 if (dataMonitor) {
                     clearNode(monitorDataTag);
-
                     objectMonitor = JSON.parse(dataMonitor);
-                    //console.log(objectMonitor);
                     if (objectMonitor.hasOwnProperty('queue')) {
                         var root = objectMonitor.queue;
                         for (var queueName in root) {
@@ -93,7 +92,6 @@
                                 var queueNode = createQueueElement(queueName, root[queueName]);
                                 monitorDataTag.appendChild(queueNode);
                             }
-
                         }
                     }
                 }
@@ -106,9 +104,8 @@
                 for (phoneNumber in members) {
                     phones.appendChild(createPhoneElement(phoneNumber, members[phoneNumber]));
                 }
-
                 return el ('div', {class: 'queue-element'}, [
-                    el ('div', {class: 'queue-element-name'}, name),
+                    //el ('div', {class: 'queue-element-name'}, name),
                     el ('div', {class: 'queue-element-phones'}, [
                         phones
                     ])
@@ -116,13 +113,12 @@
             }
 
             function createPhoneElement(phone, statuses) {
-
                 var classes = ['phone-element'];
                 classes.push(getClassByStatus(statuses));
-
                 var options = {class: classes.join(' ')};
-
-                return el('div', options, phone);
+                return el('div', options, [
+                    el ('span', {}, phone)
+                ]);
             }
 
             function getClassByStatus(statuses) {
@@ -136,7 +132,6 @@
                 if (statuses.indexOf('Not in use') > -1) {
                     return 'available';
                 }
-
                 if (statuses.indexOf('In use') > -1) {
                     return 'busy';
                 }

@@ -147,12 +147,9 @@ class AsteriskRecordRepository extends ServiceEntityRepository
             d.number_calls
         FROM
         (
-            SELECT
-                DATE(ar.calldate) as 'date',
-                count(ar.uniqueid) as 'number_calls'
+            SELECT DATE(ar.calldate) as 'date', count(ar.uniqueid) as 'number_calls'
             FROM biomed.asterisk_record ar
-            WHERE
-                ar.calldate BETWEEN '{$dtStartStr}' AND '{$dtEndStr}'
+            WHERE ar.calldate BETWEEN '{$dtStartStr}' AND '{$dtEndStr}'
             GROUP BY DATE(ar.calldate)
         ) d
         ORDER BY d.date ASC";
