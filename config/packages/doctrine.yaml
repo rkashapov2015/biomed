@@ -1,32 +1,59 @@
 parameters:
-    # Adds a fallback DATABASE_URL if the env var is not set.
-    # This allows you to run cache:warmup even if your
-    # environment variables are not available yet.
-    # You should not need to change this value.
-    env(DATABASE_URL): ''
+  # Adds a fallback DATABASE_URL if the env var is not set.
+  # This allows you to run cache:warmup even if your
+  # environment variables are not available yet.
+  # You should not need to change this value.
+  env(DATABASE_URL): ''
 
 doctrine:
-    dbal:
-        # configure these for your database server
+  dbal:
+    # configure these for your database server
+    default_connection: default
+    connections:
+      default:
+        url: '%env(resolve:DATABASE_URL)%'
         driver: 'pdo_mysql'
         server_version: '5.7'
         charset: utf8mb4
         default_table_options:
-            charset: utf8mb4
-            collate: utf8mb4_unicode_ci
-
-        url: '%env(resolve:DATABASE_URL)%'
-    orm:
-        auto_generate_proxy_classes: '%kernel.debug%'
+          charset: utf8mb4
+          collate: utf8mb4_unicode_ci
+      helloasterisk:
+        driver: 'pdo_pgsql'
+        host: '%env(resolve:HELLOASTERISK_DB_URL)%'
+        port: '%env(resolve:HELLOASTERISK_DB_PORT)%'
+        dbname: '%env(resolve:HELLOASTERISK_DB_NAME)%'
+        user: '%env(resolve:HELLOASTERISK_USER)%'
+        password: '%env(resolve:HELLOASTERISK_PASS)%'
+        schema_filter: ~^main\.~
+        charset: utf8
+  orm:
+    default_entity_manager: default
+    auto_generate_proxy_classes: '%kernel.debug%'
+    entity_managers:
+      default:
+        connection: default
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
         mappings:
-            App:
-                is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+          Common:
+            is_bundle: false
+            type: annotation
+            dir: '%kernel.project_dir%/src/Entity/Common'
+            prefix: 'App\Entity\Common'
+            alias: Common
         dql:
-            string_functions:
-                DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
+          string_functions:
+            DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
+      helloasterisk:
+        connection: helloasterisk
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        #auto_mapping: false
+        mappings:
+          Hello:
+            is_bundle: false
+            type: annotation
+            dir: '%kernel.project_dir%/src/Entity/Hello'
+            prefix: 'App\Entity\Hello'
+            alias: Hello
+

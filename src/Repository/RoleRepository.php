@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Role;
+use App\Entity\CommonRole;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

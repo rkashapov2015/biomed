@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\CommonParam;
+use App\Entity\Common\CommonParam;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Role;
-use App\Entity\User;
+use App\Entity\Common\{Role,User};
 use App\Form\RoleType;
 use App\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

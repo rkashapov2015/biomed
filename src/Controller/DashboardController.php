@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Component\{AsteriskImport, AsteriskMonitor, CurlyCurly, Helper, RecordFinder};
-use App\Entity\AsteriskRecord;
-use App\Entity\QueueResult;
+use App\Component\{AsteriskImport, AsteriskMonitor, CallFinder, RecordFinder};
+use App\Entity\Common\{AsteriskRecord, QueueResult};
+use App\Entity\Hello\Call;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{BinaryFileResponse, JsonResponse, Request, Response};
@@ -44,7 +44,8 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/search", name="search")
      */
-    public function search(Request $request, RecordFinder $finder) {
+    //public function search(Request $request, RecordFinder $finder) {
+    public function search(Request $request, CallFinder $finder) {
 
         if ($request->isXmlHttpRequest()) {
 
@@ -68,12 +69,14 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/reports", name="reports")
      */
-    public function reports(Request $request, RecordFinder $finder) {
+    public function reports(Request $request, CallFinder $finder) {
+    //public function reports(Request $request) {
 
         if ($request->isXmlHttpRequest()) {
 
             //$rows = $finder->searchRecords($_POST);
-            $statData = $this->getDoctrine()->getRepository(AsteriskRecord::class)->getDataForReport($_POST);
+            //$statData = $this->getDoctrine()->getRepository(AsteriskRecord::class)->getDataForReport($_POST);
+            $statData = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getDataForReport($_POST);
 
             //$rows = $finder-
             $rows = $this->getDoctrine()->getRepository(AsteriskRecord::class)->getCountRecordsforGraphic($_POST);

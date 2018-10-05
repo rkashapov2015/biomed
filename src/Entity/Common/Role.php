@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Common;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -40,7 +40,7 @@ class Role
     private $updated_at;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="role")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Common\User", mappedBy="role")
      */
     private $users;
 

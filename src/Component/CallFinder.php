@@ -8,11 +8,11 @@
 
 namespace App\Component;
 
+use App\Entity\Hello\Call;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use App\Entity\Common\AsteriskRecord;
 
 
-class RecordFinder
+class CallFinder
 {
     protected $manager;
 
@@ -23,14 +23,15 @@ class RecordFinder
         $this->manager = $manager;
     }
 
-    public function searchRecords($params) {
+    public function searchRecords($params)
+    {
         $this->loadParams($params);
 
         if (!$this->checkParams()) {
             return [];
         }
 
-        $rows = $this->manager->getRepository(AsteriskRecord::class)->findRecords($params);
+        $rows = $this->manager->getRepository(Call::class, 'helloasterisk')->findRecords($params);
         foreach ($rows as &$row) {
             $dt = $row['calldate'];
             $row['calldate'] = $dt->format('d.m.Y H:i:s');
@@ -38,7 +39,8 @@ class RecordFinder
         return $rows;
     }
 
-    public function loadParams($params) {
+    public function loadParams($params)
+    {
         if (!is_array($params)) {
             return false;
         }
@@ -60,4 +62,5 @@ class RecordFinder
 
         return $result;
     }
+
 }

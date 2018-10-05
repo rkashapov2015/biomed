@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Component\AsteriskMonitor;
-use App\Entity\QueueResult;
+use App\Entity\Common\QueueResult;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 

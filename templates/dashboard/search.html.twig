@@ -64,14 +64,14 @@
                         <input class="" type="text" name="phone">
                     </div>
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="three columns">
                         <label>По оператору:</label>
                     </div>
                     <div class="nine columns">
                         <input class="" type="text" name="operator">
                     </div>
-                </div>
+                </div>-->
                 <div class="row">
                     <div class="three columns">
                         <label>По статусу:</label>
@@ -105,7 +105,7 @@
         </div>
     </div>
     <div class="container">
-        <div class="row" id="resultData"></div>
+        <div class="row block-result-data" id="resultData"></div>
     </div>
     <div class="fly-panel disabled" id="flypanel">
         <div class="wrap">
@@ -232,16 +232,15 @@
                 var rowsFragment = d.createDocumentFragment();
 
                 Array.from(data).forEach(function (value) {
-                    //console.log(value.billsec);
                     rowsFragment.appendChild(
                         el('tr', {}, [
                             el ('td', {}, value.calldate ),
                             el ('td', {}, value.src ),
                             el ('td', {}, value.dst ),
-                            el ('td', {}, value.disposition ),
-                            el ('td', {}, value.billsec.toString() ),
+                            el ('td', {}, value.disposition ? 'Отвечен' : 'Не отвечен' ),
+                            el ('td', {}, value.billsec ? value.billsec.toString() : '0' ),
                             el ('td', {}, [
-                                el ('a', { 'data-sound': '/dashboard/sound?id=' + value.id, 'data-action': 'play-sound', 'href': '#' }, 'Прослушать')
+                                el ('a', { 'data-sound': '/dashboard/sound-ha?id=' + value.id, 'data-action': 'play-sound', 'href': '#' }, 'Прослушать')
                             ])
                         ])
                     );

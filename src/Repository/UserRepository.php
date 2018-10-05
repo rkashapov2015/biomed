@@ -3,8 +3,7 @@
 namespace App\Repository;
 
 use App\Component\Helper;
-use App\Entity\Role;
-use App\Entity\User;
+use App\Entity\Common\{Role,User};
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bridge\Doctrine\RegistryInterface;

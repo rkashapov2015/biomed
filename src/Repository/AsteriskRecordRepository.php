@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\AsteriskRecord;
+use App\Entity\Common\AsteriskRecord;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -31,7 +31,6 @@ class AsteriskRecordRepository extends ServiceEntityRepository
     public function findRecords(array $params) {
 
         $q = $this->createQueryBuilder('a');
-
 
         $q->select(['a.id', 'a.calldate', 'a.src', 'a.dst', 'a.billsec', 'a.disposition']);
 

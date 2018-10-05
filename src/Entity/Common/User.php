@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Common;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -69,7 +69,7 @@ class User implements UserInterface, \Serializable
     private $birthday;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Role", inversedBy="users")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Common\Role", inversedBy="users")
      */
     private $role;
 

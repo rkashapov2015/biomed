@@ -8,9 +8,7 @@
 
 namespace App\Component;
 
-use App\Entity\AsteriskRecord;
-use App\Entity\AsteriskRecordProp;
-use App\Entity\CommonParam;
+use App\Entity\Common\{AsteriskRecord, AsteriskRecordProp, CommonParam};
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

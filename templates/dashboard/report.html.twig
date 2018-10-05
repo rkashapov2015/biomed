@@ -107,6 +107,8 @@
 
             function drawReportTable(data) {
 
+                console.log(data);
+
                 var fragment = d.createDocumentFragment();
 
                 if (data) {
@@ -126,13 +128,13 @@
                     //el ('tbody', {}, [ fragment ])
                     el ('tbody', {}, [
                         el ('tr', {}, [
-                            el('td', {}, data[0]['number_of_records']),
-                            el('td', {}, data[0]['work_time']),
-                            el('td', {}, data[0]['answered']),
-                            el('td', {}, data[0]['not_answered']),
+                            el('td', {}, data[0]['number_of_records'].toString()),
+                            el('td', {}, data[0]['work_time'].toString()),
+                            el('td', {}, data[0]['answered'].toString()),
+                            el('td', {}, data[0]['not_answered'].toString()),
                             el('td', {}, data[0]['time_take_phone']),
                             el('td', {}, data[0]['average_time']),
-                            el('td', {}, data[0]['summ_duration']),
+                            el('td', {}, data[0]['summ_duration'].toString()),
                         ])
                     ])
                 ]);
