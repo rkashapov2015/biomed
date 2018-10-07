@@ -12,40 +12,56 @@
 
         </div>
         <hr>
-        <div class="row">
-            <div class="three columns">
-                <label>Логин</label>
+        <form id="formUser">
+            <div class="row">
+                <div class="three columns">
+                    <label>Логин</label>
+                </div>
+                <div class="nine columns">
+                    <input type="text" name="username" value="{{ user.username }}" class="u-full-width">
+                </div>
             </div>
-            <div class="nine columns">
-                <input type="text" name="first_name" value="{{ user.username }}" class="u-full-width">
+            <div class="row">
+                <div class="three columns">
+                    <label>Имя</label>
+                </div>
+                <div class="nine columns">
+                    <input type="text" name="first_name" value="{{ user.getFirstName() }}" class="u-full-width">
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="three columns">
-                <label>Имя</label>
+            <div class="row">
+                <div class="three columns">
+                    <label>Фамилия</label>
+                </div>
+                <div class="nine columns">
+                    <input type="text" name="last_name" value="{{ user.getLastName() }}" class="u-full-width">
+                </div>
             </div>
-            <div class="nine columns">
-                <input type="text" name="first_name" value="{{ user.getFirstName() }}" class="u-full-width">
+            <div class="row">
+                <div class="three columns">
+                    <label>Пароль</label>
+                </div>
+                <div class="nine columns">
+                    <input type="password" name="password" class="u-full-width">
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="three columns">
-                <label>Фамилия</label>
+            <div class="row text-center">
+                <button id="buttonSubmit">Сохранить</button>
             </div>
-            <div class="nine columns">
-                <input type="text" name="last_name" value="{{ user.getLastName() }}" class="u-full-width">
-            </div>
-        </div>
-        <div class="row">
-            <div class="three columns">
-                <label>Пароль</label>
-            </div>
-            <div class="nine columns">
-                <input type="password" name="password" class="u-full-width">
-            </div>
-        </div>
-        <div class="row text-center">
-            <button>Сохранить</button>
-        </div>
+        </form>
     </div>
+    <script>
+        (function (d, w) {
+            var formUser = d.getElementById('formUser');
+            var buttonSubmit = d.getElementById('buttonSubmit');
+
+            buttonSubmit.addEventListener('click', function (e) {
+                e.preventDefault();
+                var frm = new FormData(formUser);
+                sendData(formUser.action, frm, function (data) {
+                    console.log(data);
+                });
+            });
+        })(document, window);
+    </script>
 {% endblock %}

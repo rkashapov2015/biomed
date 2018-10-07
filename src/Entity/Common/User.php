@@ -318,4 +318,30 @@ class User implements UserInterface, \Serializable
         $this->setUpdatedAt($dt);
 
     }
+
+    public function load($data) {
+        if (!is_array($data)) {
+            return false;
+        }
+
+        $fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'password'
+        ];
+
+        foreach ($fields as $field) {
+            if (array_key_exists($field, $data) && !empty($data[$field])) {
+
+                $this->$field = $data[$field];
+            }
+        }
+  //      if (!empty($data['username']))
+    //        $this->setUsername($data['username']);
+
+//        if (!empty($data['']))
+
+        return true;
+    }
 }

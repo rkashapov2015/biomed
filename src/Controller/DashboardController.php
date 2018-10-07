@@ -135,6 +135,32 @@ class DashboardController extends AbstractController
         return new Response('');
     }
 
+    /**
+     * @param Request $request
+     * @param AsteriskImport $asteriskImport
+     * @return BinaryFileResponse|Response
+     *
+     * @Route("/dashboard/sound-ha", name="sound-ha")
+     */
+    public function soundHa(Request $request, AsteriskImport $asteriskImport) {
+        $id = $request->get('id');
+
+        $model = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->findOneBy(['callId' => $id]);
+
+        if (empty($model)) {
+            return new Response('');
+        }
+
+        $uniqueid = $model->getLinkedid();
+        $filePath = $asteriskImport->getSoundByUniqueid($uniqueid);
+
+        if ($filePath) {
+            return new BinaryFileResponse($filePath);
+            //return new Response($filePath);
+        }
+        return new Response('');
+    }
+
     public function config() {
 
     }

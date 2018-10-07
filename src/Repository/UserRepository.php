@@ -118,6 +118,24 @@ class UserRepository extends ServiceEntityRepository
         return $user->getUsername();
     }
 
+    public function update(User $user, $data) {
+
+        if (array_key_exists('password', $data) && !empty($data['password'])) {
+            //if ($this->encoder->isPasswordValid($user, $data['password'])) {
+                $data['password'] = $this->encoder->encodePassword($user, $data['password']);
+            //}
+        }
+
+        if (!$user->load($data)) {
+            return 'data not loaded';
+        }
+
+        $manager = $this->getEntityManager();
+        $manager->persist($user);
+        $manager->flush();
+        return $user->serialize();
+    }
+
     protected function generateUsername(string $first_name, string $last_name, string $email) {
         $username = '';
         if (!empty($email)) {
