@@ -135,18 +135,33 @@ class CallRepository extends ServiceEntityRepository
         $dtStartStr = $dtStart->format('Y.m.d H:i:s');
         $dtEndStr = $dtEnd->format('Y.m.d H:i:s');
 
-        $sql = "
-        SELECT 
-            DATE_FORMAT(d.date, \"%d.%m.%Y\") as 'date',
-            d.number_calls
-        FROM
-        (
-            SELECT DATE(ar.start_time) as 'date', count(ar.uniqueid) as 'number_calls'
-            FROM biomed.asterisk_record ar
-            WHERE ar.calldate BETWEEN '{$dtStartStr}' AND '{$dtEndStr}'
-            GROUP BY DATE(ar.calldate)
-        ) d
-        ORDER BY d.date ASC";
+        $sql = '';
+
+        $sqlForDay = "select
+            to_char(date_trunc('hour', x.start_time), 'HH24:MI') date_name,
+            sum(1) summ,
+            sum(case when x.answer_time is not null then 1 else 0 end) answered,
+            sum(case when x.answer_time is null then 1 else 0 end) not_answered 
+        FROM main.call x
+        WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED'
+        group by date_trunc('hour', x.start_time)
+        order by date_trunc('hour', x.start_time) asc";
+
+        $sqlForInterval = "select
+            to_char(x.start_time, 'DD.MM.YYYY') date_name,
+            sum(1) summ,
+            sum(case when x.answer_time is not null then 1 else 0 end) answered,
+            sum(case when x.answer_time is null then 1 else 0 end) not_answered 
+        FROM main.call x
+        WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED'
+        group by to_char(x.start_time, 'DD.MM.YYYY')
+        order by to_char(x.start_time, 'DD.MM.YYYY')";
+
+        if ($params['start_date'] == $params['end_date']) {
+            $sql = $sqlForDay;
+        } else {
+            $sql = $sqlForInterval;
+        }
 
         $connection = $this->getEntityManager()->getConnection();
         $stmt = $connection->prepare($sql);

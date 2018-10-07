@@ -79,15 +79,28 @@ class DashboardController extends AbstractController
             $statData = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getDataForReport($_POST);
 
             //$rows = $finder-
-            $rows = $this->getDoctrine()->getRepository(AsteriskRecord::class)->getCountRecordsforGraphic($_POST);
+            $rows = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getCountRecordsforGraphic($_POST);
 
+            $type = '';
+
+            if ($_POST['start_date'] == $_POST['end_date']) {
+                $type = 'line';
+            } else {
+                $type = 'bar';
+            }
 
             //$resultData = [];
             $resultData = [
                 'stat' => $statData,
                 'graphic' => [
-                    'dates' => array_column($rows, 'date'),
-                    'data' => array_column($rows, 'number_calls')
+                    'dates' => array_column($rows, 'date_name'),
+                    //'data' => array_column($rows, 'number_calls')
+                    'type' => $type,
+                    'data' => [
+                        'summ' => array_column($rows, 'summ'),
+                        'answered' => array_column($rows, 'answered'),
+                        'not_answered' => array_column($rows, 'not_answered')
+                    ]
                 ],
                 'rows' => $rows
             ];

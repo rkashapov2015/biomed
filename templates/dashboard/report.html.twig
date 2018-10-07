@@ -79,8 +79,11 @@
 
                     var dataForGraphics = {
                         labels: object.graphic.dates,
+                        type: object.graphic.type,
                         lines: [
-                            {label: 'Звонки', data: object.graphic.data, color: 'rgb(153, 255, 204)', backColor: 'rgba(153, 255, 204, 0.5)'},
+                            {label: 'Потерянные', data: object.graphic.data.not_answered, color: 'rgb(252, 40, 71)', backColor: 'rgba(252, 40, 71, 1)'},
+                            {label: 'Отвеченные', data: object.graphic.data.answered, color: 'rgb(100, 255, 153)', backColor: 'rgba(100, 255, 153, 0.5)'},
+                            {label: 'Всего', data: object.graphic.data.summ, color: 'rgb(255, 255, 153)', backColor: 'rgba(255, 255, 153, 0.5)'},
                         ]
                     };
 
@@ -118,22 +121,26 @@
                 var table =  el ('table', {}, [
                     el ('thead', {}, [
                         el('th', {},  'Количество звонков, шт.'),
-                        el('th', {},  'В рабочее время, шт.'),
+                        //el('th', {},  'В рабочее время, шт.'),
                         el('th', {},  'Отработанные, шт.'),
                         el('th', {},  'Потерянные, шт.'),
                         el('th', {},  'Время поднятия трубки, сек.'),
+                        el('th', {},  'Макс. время поднятия трубки, сек.'),
                         el('th', {},  'Средняя продолжительность разговора, сек.'),
+                        el('th', {},  'Макс. продолжительность разговора, сек.'),
                         el('th', {},  'Общая продолжительность, мин.')
                     ]),
                     //el ('tbody', {}, [ fragment ])
                     el ('tbody', {}, [
                         el ('tr', {}, [
                             el('td', {}, data[0]['number_of_records'].toString()),
-                            el('td', {}, data[0]['work_time'].toString()),
+                            //el('td', {}, data[0]['work_time'].toString()),
                             el('td', {}, data[0]['answered'].toString()),
                             el('td', {}, data[0]['not_answered'].toString()),
                             el('td', {}, data[0]['time_take_phone']),
+                            el('td', {}, data[0]['max_time_take_phone']),
                             el('td', {}, data[0]['average_time']),
+                            el('td', {}, data[0]['max_time']),
                             el('td', {}, data[0]['summ_duration'].toString()),
                         ])
                     ])
@@ -144,32 +151,61 @@
 
             function drawGraphic(ctx, data) {
                 var lines = [];
+                type = data.type;
                 Array.from(data.lines).forEach(function (value) {
                     var line = {
                         label: value.label,
                         borderWidth: 1,
                         data: value.data,
-                        borderColor: [value.color],
-                        backgroundColor: [value.backColor]
+                        borderColor: value.color,
+                        backgroundColor: value.backColor
                     };
                     lines.push(line);
                 });
-
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.labels,
-                        datasets: lines
+                console.log(lines);
+                var optionsGraphic = {
+                    tooltips: {
+                        mode: 'index',
+                            intersect: false
                     },
-                    options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                };
+
+                if (type === 'bar') {
+                    optionsGraphic = {
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        responsive: true,
                         scales: {
+                            xAxes: [{
+                                stacked: true
+                            }],
                             yAxes: [{
+                                stacked: true,
                                 ticks: {
                                     beginAtZero:true
                                 }
                             }]
                         }
-                    }
+                    };
+                }
+
+                var myChart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: data.labels,
+                        datasets: lines
+                    },
+                    options: optionsGraphic
                 });
                 return myChart;
             }
