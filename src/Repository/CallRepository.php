@@ -114,8 +114,8 @@ class CallRepository extends ServiceEntityRepository
         sum(case when c.answer_time is null then 1 else 0 end) not_answered,
         ROUND(avg(extract(epoch from (c.answer_time - c.start_time)))::numeric,2) time_take_phone,
         ROUND((max(extract( epoch from (c.answer_time - c.start_time))))::numeric,2) max_time_take_phone,
-        ROUND(AVG(c.call_duration), 2) average_time,
-        ROUND((MAX(c.call_duration)),2) max_time,
+        ROUND(AVG(c.speak_duration), 2) average_time,
+        ROUND((MAX(c.speak_duration)),2) max_time,
         SUM(c.call_duration)/60 summ_duration
         FROM main.call c
         WHERE c.start_time BETWEEN '{$dtStartStr}' AND '{$dtEndStr}' and c.trunk = 'BIOMED'";
