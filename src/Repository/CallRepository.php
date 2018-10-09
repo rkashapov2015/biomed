@@ -112,11 +112,11 @@ class CallRepository extends ServiceEntityRepository
         sum(case when c.start_time::time between '7:00:00'::time and '22:00:00'::time then 1 else 0 end) work_time,
         sum(case when c.answer_time is not null then 1 else 0 end) answered,
         sum(case when c.answer_time is null then 1 else 0 end) not_answered,
-        ROUND(avg(extract(epoch from (c.answer_time - c.start_time)))::numeric,2) time_take_phone,
-        ROUND((max(extract( epoch from (c.answer_time - c.start_time))))::numeric,2) max_time_take_phone,
-        ROUND(AVG(c.speak_duration), 2) average_time,
-        ROUND((MAX(c.speak_duration)),2) max_time,
-        SUM(c.speak_duration)/60 summ_duration
+        to_char(ROUND(avg(extract(epoch from (c.answer_time - c.start_time)))::numeric,0) * '1 second'::interval, 'MI:SS') time_take_phone,
+        to_char(ROUND((max(extract( epoch from (c.answer_time - c.start_time))))::numeric,0) * '1 second'::interval, 'MI:SS') max_time_take_phone,
+        to_char(ROUND(AVG(c.speak_duration), 0) * '1 second'::interval, 'MI:SS') average_time,
+        to_char(ROUND((MAX(c.speak_duration)),0) * '1 second'::interval, 'MI:SS') max_time,
+        to_char(SUM(c.speak_duration)* '1 second'::interval, 'HH24:MI:SS') summ_duration
         FROM main.call c
         WHERE c.start_time BETWEEN '{$dtStartStr}' AND '{$dtEndStr}' and c.trunk = 'BIOMED'";
 
@@ -163,6 +163,45 @@ class CallRepository extends ServiceEntityRepository
             $sql = $sqlForInterval;
         }
 
+        $connection = $this->getEntityManager()->getConnection();
+        $stmt = $connection->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getWaitingInQueueByDay(string $date) {
+        $dt = new \DateTime($date);
+        $dtStart = $dt->format('Y-m-d');
+        $dtEnd = $dtStart;
+        $sql = "
+        WITH cte AS (
+           select
+            date_trunc('hour', start_time) AS day_start,
+            date_trunc('second', start_time) AS second_start,   	 
+            date_trunc('second', coalesce(answer_time, end_time)) AS second_end, 
+            count(*) AS second_ct
+           FROM main.call where trunk = 'BIOMED' and start_time between '{$dtStart} 00:00:00' and '{$dtEnd} 23:59:59' 
+           group BY 1,2,3
+           order by 1
+        )
+        select
+            dd.sec_start time_point,
+            round(avg(dd.running_ct),2) avg_queue,
+            max(dd.running_ct) max_queue
+        from (
+            SELECT 
+                cte.day_start, 
+                date_trunc('hour', m.second_start) sec_start,
+                cte.second_end,
+                COALESCE(sum(cte.second_ct) OVER (partition BY cte.day_start, m.second_start), 0) AS running_ct
+            FROM  (
+               SELECT generate_series(min(second_start), max(second_end), interval '2 sec')
+               FROM cte
+            ) m(second_start)
+            LEFT JOIN cte on m.second_start between cte.second_start and cte.second_end
+        ) dd
+        group by 1
+        order by 1";
         $connection = $this->getEntityManager()->getConnection();
         $stmt = $connection->prepare($sql);
         $stmt->execute();
