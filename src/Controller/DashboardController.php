@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Component\{AsteriskImport, AsteriskMonitor, CallFinder, RecordFinder};
-use App\Entity\Common\{AsteriskRecord, QueueResult};
+use App\Entity\Common\{AsteriskRecord, QueueResult, QueueWaiting};
 use App\Entity\Hello\Call;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -81,6 +81,10 @@ class DashboardController extends AbstractController
             //$rows = $finder-
             $rows = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getCountRecordsforGraphic($_POST);
 
+            $rowsWaiting = $this->getDoctrine()->getRepository(QueueWaiting::class)->getInfoForReport($_POST);
+            if ($statData && $rowsWaiting) {
+                $statData[0]['max_waiting'] = intval(max(array_column($rowsWaiting, 'max_queue')));
+            }
             $type = '';
 
             if ($_POST['start_date'] == $_POST['end_date']) {
@@ -99,7 +103,8 @@ class DashboardController extends AbstractController
                     'data' => [
                         'summ' => array_column($rows, 'summ'),
                         'answered' => array_column($rows, 'answered'),
-                        'not_answered' => array_column($rows, 'not_answered')
+                        'not_answered' => array_column($rows, 'not_answered'),
+                        'waiting' => array_column($rowsWaiting, 'max_queue')
                     ]
                 ],
                 'rows' => $rows

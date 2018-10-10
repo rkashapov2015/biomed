@@ -137,15 +137,27 @@ class CallRepository extends ServiceEntityRepository
 
         $sql = '';
 
-        $sqlForDay = "select
-            to_char(date_trunc('hour', x.start_time), 'HH24:MI') date_name,
-            sum(1) summ,
-            sum(case when x.answer_time is not null then 1 else 0 end) answered,
-            sum(case when x.answer_time is null then 1 else 0 end) not_answered 
-        FROM main.call x
-        WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED'
-        group by date_trunc('hour', x.start_time)
-        order by date_trunc('hour', x.start_time) asc";
+        $sqlForDay = "
+            WITH cte AS (
+                select
+                    date_trunc('hour', x.start_time) date_hour,
+                    to_char(date_trunc('hour', x.start_time), 'HH24:MI') date_name,
+                    sum(1) summ,
+                    sum(case when x.answer_time is not null then 1 else 0 end) answered,
+                    sum(case when x.answer_time is null then 1 else 0 end) not_answered 
+                FROM main.call x
+                WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED'
+                group by date_trunc('hour', x.start_time)
+                order by date_trunc('hour', x.start_time) asc
+            )
+            SELECT
+                COALESCE(to_char(date_trunc('hour', cte.date_hour), 'HH24:MI'), to_char(date_trunc('hour', m.date_hour), 'HH24:MI')) date_name,
+                COALESCE(cte.answered, 0) answered,
+                COALESCE(cte.not_answered, 0) not_answered
+            FROM  (
+                SELECT generate_series(min(cte.date_hour), max(cte.date_hour), interval '1 hour') FROM cte
+            ) m(date_hour)
+            left JOIN cte USING(date_hour)";
 
         $sqlForInterval = "select
             to_char(x.start_time, 'DD.MM.YYYY') date_name,

@@ -48,12 +48,17 @@ class AggregateWaitingCommand extends Command
         $items = 0;
         foreach ($rows as $row) {
 
-            $model = $this->manager->getRepository(QueueWaiting::class)->findBy(['time_point' => (new \DateTime($row['time_point']))]);
-            if (!empty($model)) {
-                continue;
+            $models = $this->manager->getRepository(QueueWaiting::class)->findBy(['time_point' => (new \DateTime($row['time_point']))]);
+            $queueInfo = new QueueWaiting();
+            if (!empty($models)) {
+                if ($models[0]->getMaxQueue() != $row['max_queue'] && $models[0]->getAvgQueue() != $row['avg_queue']) {
+                    $queueInfo = $models[0];
+                } else {
+                    continue;
+                }
+
             }
 
-            $queueInfo = new QueueWaiting();
             $queueInfo->setTimePoint((new \DateTime($row['time_point'])));
             $queueInfo->setAvgQueue($row['avg_queue']);
             $queueInfo->setMaxQueue($row['max_queue']);
