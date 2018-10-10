@@ -207,4 +207,42 @@ class CallRepository extends ServiceEntityRepository
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function prepareWaitingData(\DateTimeInterface $dt) {
+        $dtStr = $dt->format('Y-m-d');
+        $sql = "
+        WITH cte AS (
+            select
+                date_trunc('hour', start_time) AS day_start,
+                date_trunc('second', start_time) AS second_start,
+                date_trunc('second', coalesce(answer_time, end_time)) AS second_end,
+                count(*) AS second_ct
+            FROM main.call where trunk = 'BIOMED' and start_time between '{$dtStr} 00:00:00' and '{$dtStr} 23:59:59'
+            group BY 1,2,3
+            order by 1
+        )
+        select
+            dd.sec_start time_point,
+            round(avg(dd.running_ct),2) avg_queue,
+            max(dd.running_ct) max_queue
+        from (
+            SELECT
+                cte.day_start,
+                date_trunc('hour', m.second_start) sec_start,
+                cte.second_end,
+                COALESCE(sum(cte.second_ct) OVER (partition BY cte.day_start, m.second_start), 0) AS running_ct
+            FROM  (
+               SELECT generate_series(min(second_start), '{$dtStr} 21:00:00', interval '2 sec')
+               FROM cte
+            ) m(second_start)
+            LEFT JOIN cte on m.second_start between cte.second_start and cte.second_end
+        ) dd
+        group by 1
+        order by 1";
+
+        $connection = $this->getEntityManager()->getConnection();
+        $stmt = $connection->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }
