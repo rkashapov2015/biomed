@@ -199,16 +199,19 @@
                                 id: 'y-axis-1',
                             },
                             {
-                                type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                ticks: {
+                                    beginAtZero:true
+                                },
+                                type: 'linear',
                                 display: true,
                                 position: 'right',
                                 id: 'y-axis-2',
                                 gridLines: {
-                                    drawOnChartArea: false, // only want the grid lines for one axis to show up
-                                },
+                                    drawOnChartArea: true,
+                                }
                             }
                         ]
-                    }
+                    },
                 };
 
                 if (type === 'bar') {
@@ -245,12 +248,15 @@
                                     id: 'y-axis-1',
                                 },
                                 {
-                                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                                    ticks: {
+                                        beginAtZero:true
+                                    },
+                                    type: 'linear',
                                     display: true,
                                     position: 'right',
                                     id: 'y-axis-2',
                                     gridLines: {
-                                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                        drawOnChartArea: false,
                                     },
                                 }
                             ]
