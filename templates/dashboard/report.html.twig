@@ -113,8 +113,6 @@
             }
 
             function drawReportTable(data) {
-                //console.log(data);
-
                 var fragment = d.createDocumentFragment();
 
                 if (data) {
@@ -172,6 +170,24 @@
                     lines.push(line);
                 });
                 //console.log(lines);
+                var yAxes = [
+                        {
+                            ticks: { beginAtZero:true },
+                            display: true,
+                            position: 'left',
+                            id: 'y-axis-1',
+                        },
+                        {
+                            ticks: { beginAtZero:true },
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'y-axis-2',
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    ];
                 var optionsGraphic = {
                     tooltips: {
                         mode: 'index',
@@ -190,30 +206,7 @@
                     },
                     responsive: true,
                     stacked: false,
-                    scales: {
-                        yAxes: [
-                            {
-                                ticks: {
-                                    beginAtZero:true
-                                },
-                                display: true,
-                                position: 'left',
-                                id: 'y-axis-1',
-                            },
-                            {
-                                ticks: {
-                                    beginAtZero:true
-                                },
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                id: 'y-axis-2',
-                                gridLines: {
-                                    drawOnChartArea: false,
-                                }
-                            }
-                        ]
-                    },
+                    scales: { yAxes: yAxes },
                 };
 
                 if (type === 'bar') {
@@ -235,33 +228,8 @@
                         },
                         responsive: true,
                         scales: {
-                            xAxes: [
-                                {
-                                    stacked: true
-                                }
-                            ],
-                            yAxes: [
-                                {
-                                    ticks: {
-                                        beginAtZero:true
-                                    },
-                                    display: true,
-                                    position: 'left',
-                                    id: 'y-axis-1',
-                                },
-                                {
-                                    ticks: {
-                                        beginAtZero:true
-                                    },
-                                    type: 'linear',
-                                    display: true,
-                                    position: 'right',
-                                    id: 'y-axis-2',
-                                    gridLines: {
-                                        drawOnChartArea: false,
-                                    },
-                                }
-                            ]
+                            xAxes: [ { stacked: true } ],
+                            yAxes: yAxes
                         }
                     };
                 }
