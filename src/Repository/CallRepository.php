@@ -21,6 +21,9 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class CallRepository extends ServiceEntityRepository
 {
+
+    private $minSeconds = 6;
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Call::class);
@@ -118,11 +121,11 @@ class CallRepository extends ServiceEntityRepository
         to_char(ROUND((MAX(c.speak_duration)),0) * '1 second'::interval, 'MI:SS') max_time,
         to_char(SUM(c.speak_duration)* '1 second'::interval, 'HH24:MI:SS') summ_duration
         FROM main.call c
-        WHERE c.start_time BETWEEN '{$dtStartStr}' AND '{$dtEndStr}' and c.trunk = 'BIOMED' and c.call_duration > 6";
+        WHERE c.start_time BETWEEN '{$dtStartStr}' AND '{$dtEndStr}' and c.trunk = 'BIOMED' and c.call_duration > :seconds";
 
         $connection = $this->getEntityManager()->getConnection();
         $stmt = $connection->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(['seconds' => $this->minSeconds]);
         return $stmt->fetchAll();
 
     }
@@ -137,6 +140,7 @@ class CallRepository extends ServiceEntityRepository
 
         $sql = '';
 
+
         $sqlForDay = "
             WITH cte AS (
                 select
@@ -146,7 +150,7 @@ class CallRepository extends ServiceEntityRepository
                     sum(case when x.answer_time is not null then 1 else 0 end) answered,
                     sum(case when x.answer_time is null then 1 else 0 end) not_answered 
                 FROM main.call x
-                WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and x.call_duration > 6
+                WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and x.call_duration > :seconds
                 group by date_trunc('hour', x.start_time)
                 order by date_trunc('hour', x.start_time) asc
             )
@@ -165,7 +169,7 @@ class CallRepository extends ServiceEntityRepository
             sum(case when x.answer_time is not null then 1 else 0 end) answered,
             sum(case when x.answer_time is null then 1 else 0 end) not_answered 
         FROM main.call x
-        WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and x.call_duration > 6
+        WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and x.call_duration > :seconds
         group by to_char(x.start_time, 'DD.MM.YYYY')
         order by to_char(x.start_time, 'DD.MM.YYYY')";
 
@@ -177,7 +181,7 @@ class CallRepository extends ServiceEntityRepository
 
         $connection = $this->getEntityManager()->getConnection();
         $stmt = $connection->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(['seconds' => $this->minSeconds]);
         return $stmt->fetchAll();
     }
 

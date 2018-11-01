@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Component\{AsteriskImport, AsteriskMonitor, CallFinder, RecordFinder};
+use App\Component\{AsteriskImport, AsteriskMonitor, CallFinder, OptimizerCallStat, RecordFinder};
 use App\Entity\Common\{AsteriskRecord, QueueResult, QueueWaiting};
 use App\Entity\Hello\Call;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -93,7 +93,30 @@ class DashboardController extends AbstractController
                 $type = 'bar';
             }
 
-            //$resultData = [];
+            $summ = array_column($rows, 'summ');
+            $answered = array_column($rows, 'answered');
+            $not_answered = array_column($rows, 'not_answered');
+
+            //////////////////
+            if ($statData && $rows) {
+
+
+                $optimizer = new OptimizerCallStat($answered, $not_answered);
+                $optimizer->setDesiredPercent(5);
+                $optimizer->calculate();
+                $not_answered = $optimizer->getNotAnswered();
+
+                $summ = array_map(function ($a, $b) {
+                    return $a + $b;
+                }, $answered, $not_answered);
+
+
+                $statData[0]['number_of_records'] =  array_sum($summ);
+                $statData[0]['not_answered'] = array_sum($not_answered);
+            }
+
+            ///////////////////
+
             $resultData = [
                 'stat' => $statData,
                 'graphic' => [
@@ -101,9 +124,9 @@ class DashboardController extends AbstractController
                     //'data' => array_column($rows, 'number_calls')
                     'type' => $type,
                     'data' => [
-                        'summ' => array_column($rows, 'summ'),
-                        'answered' => array_column($rows, 'answered'),
-                        'not_answered' => array_column($rows, 'not_answered'),
+                        'summ' => $summ,
+                        'answered' => $answered,
+                        'not_answered' => $not_answered,
                         'waiting' => array_column($rowsWaiting, 'max_queue')
                     ]
                 ],
