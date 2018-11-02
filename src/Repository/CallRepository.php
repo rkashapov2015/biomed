@@ -119,7 +119,8 @@ class CallRepository extends ServiceEntityRepository
         to_char(ROUND((max(extract( epoch from (c.answer_time - c.start_time))))::numeric,0) * '1 second'::interval, 'MI:SS') max_time_take_phone,
         to_char(ROUND(AVG(c.speak_duration), 0) * '1 second'::interval, 'MI:SS') average_time,
         to_char(ROUND((MAX(c.speak_duration)),0) * '1 second'::interval, 'MI:SS') max_time,
-        to_char(SUM(c.speak_duration)* '1 second'::interval, 'HH24:MI:SS') summ_duration
+        --to_char(SUM(c.speak_duration)* '1 second'::interval, 'HH24:MI:SS') summ_duration
+        CONCAT((SUM(c.speak_duration)/60)::text, ':'::text, (SUM(c.speak_duration)%60)::text) summ_duration
         FROM main.call c
         WHERE c.start_time BETWEEN '{$dtStartStr}' AND '{$dtEndStr}' and c.trunk = 'BIOMED' and 
         ((c.answer_time is not null and c.call_duration > 1) or (c.answer_time is null and c.call_duration > :seconds))";
