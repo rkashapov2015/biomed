@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit CommonParam{% endblock %}
+
+{% block body %}
+    <h1>Edit CommonParam</h1>
+
+    {{ include('common_common_param/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('common_common_param_index') }}">back to list</a>
+
+    {{ include('common_common_param/_delete_form.html.twig') }}
+{% endblock %}

@@ -17,6 +17,8 @@ class OptimizerCallStat
     private $summAnswered = 0;
     private $summNotAnswered = 0;
 
+    private $mode = 0;
+
     public function __construct(array $answered, array $notAnswered)
     {
         $this->answered = $answered;
@@ -30,10 +32,22 @@ class OptimizerCallStat
         $this->desiredPercent = floatval($percent);
     }
 
+    public function setDaylyMode() {
+        $this->mode = 0;
+    }
+    public function setRangeMode() {
+        $this->mode = 1;
+    }
+
     public function calculate()
     {
-        $this->notAnswered = $this->calculateNotAnswered();
-        $this->summNotAnswered = array_sum($this->notAnswered);
+        if ($this->mode == 0) {
+            $this->notAnswered = $this->calculateNotAnswered();
+            $this->summNotAnswered = array_sum($this->notAnswered);
+        } else {
+            $this->notAnswered = $this->calculateNotAnsweredForRange();
+            $this->summNotAnswered = array_sum($this->notAnswered);
+        }
     }
 
     public function getNotAnswered(): ?array
@@ -49,21 +63,29 @@ class OptimizerCallStat
     private function calculateNotAnswered()
     {
         $percentsForRowsNotAnswered = $this->calculatePercentForRows($this->notAnswered, $this->summNotAnswered);
-        $summN = $this->calculateSum($this->summAnswered, $this->summNotAnswered);
+        $summN = $this->calculateSumByPercent($this->summAnswered, $this->summNotAnswered);
 
         return array_map(function ($p) use ($summN) {
-            return intval(($p * $summN)/100);
+            return round(($p * $summN)/100, 0);
         }, $percentsForRowsNotAnswered);
     }
 
-    private function calculateSum($summA, $summB): int
+    private function calculateNotAnsweredForRange()
+    {
+        //$percent = $this->desiredPercent;
+        return array_map(function ($answered, $notAnswered) {
+            return $this->calculateSumByPercent($answered, $notAnswered);
+        }, $this->answered, $this->notAnswered);
+    }
+
+    private function calculateSumByPercent($summA, $summB): int
     {
         $summN = $summB;
         while(true) {
             $summ = ($summA + $summN);
             $percent = ($summN * 100)/ $summ;
 
-            if (abs($percent - $this->desiredPercent) < 2) {
+            if (abs($percent - $this->desiredPercent) < 0.0001) {
                 break;
             }
             if ($percent > $this->desiredPercent) {
@@ -72,7 +94,7 @@ class OptimizerCallStat
                 $summN *=1.5;
             }
         }
-        return intval($summN);
+        return round($summN);
     }
 
     private function calculatePercentForRows(array $array, int $summ)
@@ -81,7 +103,6 @@ class OptimizerCallStat
         foreach ($array as $row) {
             $percentes[] = ($row * 100)/$summ;
         }
-
         return $percentes;
     }
 

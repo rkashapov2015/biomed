@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CommonParam index{% endblock %}
+
+{% block body %}
+    <h1>CommonParam index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Created_at</th>
+                <th>Updated_at</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for common_param in common_params %}
+            <tr>
+                <td>{{ common_param.id }}</td>
+                <td>{{ common_param.name }}</td>
+                <td>{{ common_param.value }}</td>
+                <td>{{ common_param.createdAt ? common_param.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ common_param.updatedAt ? common_param.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('common_common_param_show', {'id': common_param.id}) }}">show</a>
+                    <a href="{{ path('common_common_param_edit', {'id': common_param.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('common_common_param_new') }}">Create new</a>
+{% endblock %}

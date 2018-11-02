@@ -86,8 +86,9 @@ class DashboardController extends AbstractController
                 $statData[0]['max_waiting'] = intval(max(array_column($rowsWaiting, 'max_queue')));
             }
             $type = '';
-
+            $forDay = false;
             if ($_POST['start_date'] == $_POST['end_date']) {
+                $forDay = true;
                 $type = 'line';
             } else {
                 $type = 'bar';
@@ -97,23 +98,26 @@ class DashboardController extends AbstractController
             $answered = array_column($rows, 'answered');
             $not_answered = array_column($rows, 'not_answered');
 
-            //////////////////
-            if ($statData && $rows) {
-
-
-                $optimizer = new OptimizerCallStat($answered, $not_answered);
-                $optimizer->setDesiredPercent(5);
-                $optimizer->calculate();
-                $not_answered = $optimizer->getNotAnswered();
-
-                $summ = array_map(function ($a, $b) {
-                    return $a + $b;
-                }, $answered, $not_answered);
-
-
-                $statData[0]['number_of_records'] =  array_sum($summ);
-                $statData[0]['not_answered'] = array_sum($not_answered);
-            }
+//            //////////////////
+//            if ($statData && $rows) {
+//
+//
+//                $optimizer = new OptimizerCallStat($answered, $not_answered);
+//                if (!$forDay) {
+//                    $optimizer->setRangeMode();
+//                }
+//                $optimizer->setDesiredPercent(5);
+//                $optimizer->calculate();
+//                $not_answered = $optimizer->getNotAnswered();
+//
+//                $summ = array_map(function ($a, $b) {
+//                    return $a + $b;
+//                }, $answered, $not_answered);
+//
+//
+//                $statData[0]['number_of_records'] =  array_sum($summ);
+//                $statData[0]['not_answered'] = array_sum($not_answered);
+//            }
 
             ///////////////////
 
