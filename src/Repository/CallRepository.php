@@ -48,10 +48,10 @@ class CallRepository extends ServiceEntityRepository
         if ($phone) {
             switch ($direction) {
                 case 'incoming':
-                    $q->andWhere($q->expr()->like('c.dst', $q->expr()->literal('%' . $phone . '%')));
+                    $q->andWhere($q->expr()->like('c.src', $q->expr()->literal('%' . $phone . '%')));
                     break;
                 case 'outgoing':
-                    $q->andWhere($q->expr()->like('c.src', $q->expr()->literal('%' . $phone . '%')));
+                    $q->andWhere($q->expr()->like('c.operator', $q->expr()->literal('%' . $phone . '%')));
                     break;
                 case 'any':
                     $q->andWhere(
