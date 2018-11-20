@@ -179,17 +179,17 @@
                             id: 'y-axis-1',
                             stacked: true
                         },
-                        {
-                            ticks: { beginAtZero:true },
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            id: 'y-axis-2',
-                            gridLines: {
-                                drawOnChartArea: false,
-                            },
-                            stacked: true
-                        }
+                        // {
+                        //     ticks: { beginAtZero:true },
+                        //     type: 'linear',
+                        //     display: true,
+                        //     position: 'right',
+                        //     id: 'y-axis-2',
+                        //     gridLines: {
+                        //         drawOnChartArea: false,
+                        //     },
+                        //     stacked: true
+                        // }
                     ];
                 var optionsGraphic = {
                     tooltips: {
@@ -199,9 +199,7 @@
                             footer: function (tooltipItems, data) {
                                 var sum = 0;
                                 tooltipItems.forEach(function(tooltipItem) {
-                                    //if (tooltipItem.datasetIndex > 0) {
-                                        sum += parseInt(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
-                                    //}
+                                    sum += parseInt(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
                                 });
                                 return 'Всего: ' + sum;
                             }
@@ -221,9 +219,7 @@
                                 footer: function (tooltipItems, data) {
                                     var sum = 0;
                                     tooltipItems.forEach(function(tooltipItem) {
-                                        if (tooltipItem.datasetIndex > 0) {
-                                            sum += parseInt(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
-                                        }
+                                        sum += parseInt(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
                                     });
                                     return 'Всего: ' + sum;
                                 }
