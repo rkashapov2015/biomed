@@ -1,0 +1,253 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block title %}Мониторинг звонков{% endblock %}
+
+{% block body %}
+    <style>
+        #resultData table th { font-size: 12px; }
+    </style>
+    <div class="panel-search">
+        <div class="container">
+            <form id="searchForm">
+                <div class="row">
+                    <div class="two columns">
+                        <label>Период:</label>
+                    </div>
+                    <div class="ten columns">
+                        <div class="row">
+                            <div class="four columns">
+                                <input id="startDate" name="start_date" type="text" class="u-full-width text-center" placeholder=От>
+                            </div>
+                            <div class="four columns">
+                                <input id="endDate" name="end_date" type="text" class="u-full-width text-center" placeholder="До">
+                            </div>
+                            <div class="four columns">
+                                <button class="button" id="getReport">Получить отчет</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container" id="resultData"></div>
+{% endblock %}
+{% block javascripts %}
+    <script src="/js/Chart.bundle.min.js"></script>
+    <script>
+        (function (d,w) {
+            var formTag = d.getElementById('searchForm');
+            var btnGetReport = d.getElementById('getReport');
+            var resultData = d.getElementById('resultData');
+
+            var startDate = d.getElementById('startDate');
+            var endDate = d.getElementById('endDate');
+
+            var strDate = moment().format('DD.MM.YYYY');
+            initDatePicker(startDate);
+            startDate.value = strDate;
+            initDatePicker(endDate);
+            endDate.value = strDate;
+
+            function onKeydownDigit(e) {
+
+                if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode === 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode === 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                    return;
+                }
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            }
+
+            btnGetReport.addEventListener('click', function (e) {
+                e.preventDefault();
+                var form = new FormData(formTag);
+
+                sendData(formTag.action, form, function (data) {
+                    var object = JSON.parse(data);
+
+                    clearNode(resultData);
+
+                    drawReportTable(object.stat);
+
+                    resultData.appendChild(el('canvas', { id: 'graphicCanvas'}));
+
+                    var ctx = document.getElementById("graphicCanvas").getContext('2d');
+
+                    var dataForGraphics = {
+                        labels: object.graphic.dates,
+                        type: object.graphic.type,
+                        lines: [
+                            //{label: 'summ', data: object.graphic.data.summ, color: 'rgb(50, 50, 50)', backColor: 'rgba(50, 50, 50, 0.8)', fill: false, yAxisID: 'y-axis-2', type: 'line'},
+                            {label: '5 s', data: object.graphic.data.s5, color: 'rgb(50, 210, 50)', backColor: 'rgba(50, 210, 50, 0.8)', yAxisID: 'y-axis-1'},
+                            {label: '10 s', data: object.graphic.data.s10, color: 'rgb(100, 170, 50)', backColor: 'rgba(100, 170, 50, 1)', yAxisID: 'y-axis-1'},
+                            {label: '15 s', data: object.graphic.data.s15, color: 'rgb(150, 130, 50)', backColor: 'rgba(150, 130, 50, 0.8)', yAxisID: 'y-axis-1'},
+                            {label: '20 s', data: object.graphic.data.s20, color: 'rgb(200, 90, 50)', backColor: 'rgba(200, 90, 50, 0.8)', yAxisID: 'y-axis-1'},
+                            {label: '25 s', data: object.graphic.data.s25, color: 'rgb(250, 90, 50)', backColor: 'rgba(250, 90, 50, 0.8)', yAxisID: 'y-axis-1'},
+                            {label: '30+ s', data: object.graphic.data.s30p, color: 'rgb(252, 50, 50)', backColor: 'rgba(252, 50, 50, 0.8)', yAxisID: 'y-axis-1'},
+                        ]
+                    };
+
+                    drawGraphic(ctx, dataForGraphics);
+
+                });
+            });
+
+            function initDatePicker(inputNode) {
+                picker = new Pikaday({
+                    field: inputNode,
+                    firstDay: 1,
+                    format: 'DD.MM.YYYY',
+                    defaultDate: strDate,
+                    i18n: {
+                        previousMonth : 'Назад',
+                        nextMonth     : 'Вперед',
+                        months        : ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                        weekdays      : ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
+                        weekdaysShort : ['Вс','Пн','Вт','Ср','Чт','Пт','Сб']
+                    }
+                });
+            }
+
+            function drawReportTable(data) {
+                var fragment = d.createDocumentFragment();
+
+                if (data) {
+                    fragment.appendChild(el ('td'));
+                }
+
+                var table =  el ('table', {}, [
+                    el ('thead', {}, [
+                        el('th', {},  'Количество звонков, шт.'),
+                        //el('th', {},  'В рабочее время, шт.'),
+                        el('th', {},  'Отработанные, шт.'),
+                        el('th', {},  'Потерянные, шт.'),
+                        el('th', {},  'Макс. ожидающих, шт.'),
+                        el('th', {},  'Cр. время поднятия трубки, мин.'),
+                        el('th', {},  'Макс. время поднятия трубки, мин.'),
+                        el('th', {},  'Средняя продолжительность разговора, мин.'),
+                        el('th', {},  'Макс. продолжительность разговора, мин.'),
+
+                        el('th', {},  'Общая продолжительность разговора, мин.')
+                    ]),
+                    //el ('tbody', {}, [ fragment ])
+                    el ('tbody', {}, [
+                        el ('tr', {}, [
+                            el('td', {}, data[0]['number_of_records'].toString()),
+                            //el('td', {}, data[0]['work_time'].toString()),
+                            el('td', {}, data[0]['answered'].toString()),
+                            el('td', {}, data[0]['not_answered'].toString()),
+                            el('td', {}, (data[0]['max_waiting'] ? data[0]['max_waiting'] : 0).toString()),
+                            el('td', {}, data[0]['time_take_phone']),
+                            el('td', {}, data[0]['max_time_take_phone']),
+                            el('td', {}, data[0]['average_time']),
+                            el('td', {}, data[0]['max_time']),
+                            el('td', {}, data[0]['summ_duration'].toString()),
+                        ])
+                    ])
+                ]);
+                //clearNode(resultData);
+                resultData.appendChild(table);
+            }
+
+            function drawGraphic(ctx, data) {
+                var lines = [];
+                type = data.type;
+                Array.from(data.lines).forEach(function (value) {
+                    var line = {
+                        label: value.label,
+                        borderWidth: 1,
+                        data: value.data,
+                        borderColor: value.color,
+                        backgroundColor: value.backColor,
+                        fill: value.hasOwnProperty('fill') ? value.fill : true,
+                        yAxisID: value.yAxisID ? value.yAxisID : null,
+                        type: value.type ? value.type : type
+                    };
+                    lines.push(line);
+                });
+                //console.log(lines);
+                var yAxes = [
+                        {
+                            ticks: { beginAtZero:true },
+                            display: true,
+                            position: 'left',
+                            id: 'y-axis-1',
+                            stacked: true
+                        },
+                        {
+                            ticks: { beginAtZero:true },
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'y-axis-2',
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                            stacked: true
+                        }
+                    ];
+                var optionsGraphic = {
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            footer: function (tooltipItems, data) {
+                                var sum = 0;
+                                tooltipItems.forEach(function(tooltipItem) {
+                                    //if (tooltipItem.datasetIndex > 0) {
+                                        sum += parseInt(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
+                                    //}
+                                });
+                                return 'Всего: ' + sum;
+                            }
+                        }
+                    },
+                    responsive: true,
+                    stacked: false,
+                    scales: { yAxes: yAxes },
+                };
+
+                if (type === 'bar') {
+                    optionsGraphic = {
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                footer: function (tooltipItems, data) {
+                                    var sum = 0;
+                                    tooltipItems.forEach(function(tooltipItem) {
+                                        if (tooltipItem.datasetIndex > 0) {
+                                            sum += parseInt(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
+                                        }
+                                    });
+                                    return 'Всего: ' + sum;
+                                }
+                            }
+                        },
+                        responsive: true,
+                        scales: {
+                            xAxes: [ { stacked: true } ],
+                            yAxes: yAxes
+                        }
+                    };
+                }
+
+                var myChart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: data.labels,
+                        datasets: lines
+                    },
+                    options: optionsGraphic
+                });
+                return myChart;
+            }
+        })(document, window);
+
+    </script>
+{% endblock %}

@@ -17,6 +17,9 @@
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}
                         <li>
+                            <a href="{{ path('reports_not_answered') }}">Не отвеченные</a>
+                        </li>
+                        <li>
                             <a href="{{ path('admin') }}">Страница администратора</a>
                         </li>
                     {% endif %}

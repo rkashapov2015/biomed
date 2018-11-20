@@ -145,6 +145,65 @@ class DashboardController extends AbstractController
         return $this->render('dashboard/report.html.twig', []);
     }
 
+
+    /**
+     * @Route("/dashboard/reports-not-answered", name="reports_not_answered")
+     */
+    public function notAnswered(Request $request, CallFinder $finder) {
+        //public function reports(Request $request) {
+
+        if ($request->isXmlHttpRequest()) {
+
+            $statData = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getDataForReport($_POST);
+            //$rows = $finder-
+            $rows = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getNotAnsweredRange($_POST);
+
+            $rowsWaiting = $this->getDoctrine()->getRepository(QueueWaiting::class)->getInfoForReport($_POST);
+            if ($statData && $rowsWaiting) {
+                $statData[0]['max_waiting'] = intval(max(array_column($rowsWaiting, 'max_queue')));
+            }
+            $type = '';
+            $forDay = false;
+            if ($_POST['start_date'] == $_POST['end_date']) {
+                $forDay = true;
+                $type = 'line';
+            } else {
+                $type = 'bar';
+            }
+
+            $summ = array_column($rows, 'summ');
+            $s5 = array_column($rows, 's5');
+            $s10 = array_column($rows, 's10');
+            $s15 = array_column($rows, 's15');
+            $s20 = array_column($rows, 's20');
+            $s25 = array_column($rows, 's25');
+            $s30p = array_column($rows, 's30p');
+
+            $resultData = [
+                'stat' => $statData,
+                'graphic' => [
+                    'dates' => array_column($rows, 'date_name'),
+                    //'data' => array_column($rows, 'number_calls')
+                    'type' => $type,
+                    'data' => [
+                        'summ' => $summ,
+                        's5' => $s5,
+                        's10' => $s10,
+                        's15' => $s15,
+                        's20' => $s20,
+                        's25' => $s25,
+                        's30p' => $s30p
+                    ]
+                ],
+                'rows' => $rows
+            ];
+
+            return new JsonResponse($resultData);
+        }
+
+        return $this->render('dashboard/report_not_answered.html.twig', []);
+    }
+
     /**
      * @Route("/dashboard/sound", name="sound")
      */

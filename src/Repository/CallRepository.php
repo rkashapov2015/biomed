@@ -265,4 +265,73 @@ class CallRepository extends ServiceEntityRepository
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function getNotAnsweredRange($params)
+    {
+        $dtStart = new \DateTime($params['start_date']);
+        $dtStart->setTime(0,0,0);
+        $dtEnd = new \DateTime($params['end_date']);
+        $dtEnd->setTime(23,59,59);
+        $dtStartStr = $dtStart->format('Y.m.d H:i:s');
+        $dtEndStr = $dtEnd->format('Y.m.d H:i:s');
+
+        $sqlForDay = "
+        WITH cte AS (
+            select
+                date_trunc('hour', x.start_time) date_hour,
+                to_char(date_trunc('hour', x.start_time), 'HH24:MI') date_name,
+                sum(1) summ,
+                sum(case when x.answer_time is null and x.call_duration between 50 and 55 then 1 else 0 end) s5, 
+                sum(case when x.answer_time is null and x.call_duration between 56 and 60 then 1 else 0 end) s10,
+                sum(case when x.answer_time is null and x.call_duration between 61 and 65 then 1 else 0 end) s15,
+                sum(case when x.answer_time is null and x.call_duration between 66 and 70 then 1 else 0 end) s20,
+                sum(case when x.answer_time is null and x.call_duration between 71 and 75 then 1 else 0 end) s25,
+                sum(case when x.answer_time is null and x.call_duration > 76 then 1 else 0 end) s30p
+            FROM main.call x
+            WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and 
+            ((x.answer_time is not null and x.call_duration > 6) or (x.answer_time is null and x.call_duration > :seconds))
+            group by date_trunc('hour', x.start_time)
+            order by date_trunc('hour', x.start_time) asc
+        )
+        SELECT
+            COALESCE(to_char(date_trunc('hour', cte.date_hour), 'HH24:MI'), to_char(date_trunc('hour', m.date_hour), 'HH24:MI')) date_name,
+            COALESCE(cte.summ, 0) summ,
+            COALESCE(cte.s5, 0) s5,
+            COALESCE(cte.s10, 0) s10,
+            COALESCE(cte.s15, 0) s15,
+            COALESCE(cte.s20, 0) s20,
+            COALESCE(cte.s25, 0) s25,
+            COALESCE(cte.s30p, 0) s30p
+        FROM  (
+            SELECT generate_series(min(cte.date_hour), max(cte.date_hour), interval '1 hour') FROM cte
+        ) m(date_hour)
+        left JOIN cte USING(date_hour)
+        ";
+        $sqlForInterval = "
+        select
+            to_char(x.start_time, 'DD.MM.YYYY') date_name,
+            sum(1) summ,
+            sum(case when x.answer_time is null and x.call_duration between 50 and 55 then 1 else 0 end) s5, 
+            sum(case when x.answer_time is null and x.call_duration between 56 and 60 then 1 else 0 end) s10,
+            sum(case when x.answer_time is null and x.call_duration between 61 and 65 then 1 else 0 end) s15,
+            sum(case when x.answer_time is null and x.call_duration between 66 and 70 then 1 else 0 end) s20,
+            sum(case when x.answer_time is null and x.call_duration between 71 and 75 then 1 else 0 end) s25,
+            sum(case when x.answer_time is null and x.call_duration > 76 then 1 else 0 end) s30p 
+        FROM main.call x
+        WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and 
+        ((x.answer_time is not null and x.call_duration > 1) or (x.answer_time is null and x.call_duration > :seconds))
+        group by to_char(x.start_time, 'DD.MM.YYYY')
+        order by to_char(x.start_time, 'DD.MM.YYYY')";
+
+        if ($params['start_date'] == $params['end_date']) {
+            $sql = $sqlForDay;
+        } else {
+            $sql = $sqlForInterval;
+        }
+
+        $connection = $this->getEntityManager()->getConnection();
+        $stmt = $connection->prepare($sql);
+        $stmt->execute(['seconds' => $this->minSeconds]);
+        return $stmt->fetchAll();
+    }
 }
