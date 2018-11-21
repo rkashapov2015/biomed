@@ -93,6 +93,8 @@ class AdminController extends AbstractController
         if (!$user) {
             throw new NotFoundHttpException('Пользователь не найден');
         }
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
         if ($request->isXmlHttpRequest()) {
             $data = $_POST;
@@ -117,7 +119,9 @@ class AdminController extends AbstractController
         }
 
         return $this->render('admin/user-view.html.twig', [
-            'user' => $user
+        //return $this->render('admin/user-view-new.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
         ]);
     }
 

@@ -168,6 +168,8 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
+    private $plain_password;
+
     /**
      * String representation of object
      * @link https://php.net/manual/en/serializable.serialize.php
@@ -303,6 +305,17 @@ class User implements UserInterface, \Serializable
             $this->role->removeElement($role);
         }
 
+        return $this;
+    }
+
+    public function getPlainPassword()
+    {
+        return $this->plain_password;
+    }
+
+    public function setPlainPassword($plain_password)
+    {
+        $this->plain_password = $plain_password;
         return $this;
     }
 

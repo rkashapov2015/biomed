@@ -1,0 +1,31 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Пользователи{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <ul class="breadcrumb">
+                <li><a href="{{ path('user-list') }}">Пользователи</a></li>
+                <li><span>{{ user.username }}</span></li>
+            </ul>
+
+        </div>
+        <hr>
+        {% include('admin/_user_form.html.twig') %}
+    </div>
+    <script>
+        (function (d, w) {
+            var formUser = d.getElementById('formUser');
+            var buttonSubmit = d.getElementById('buttonSubmit');
+
+            buttonSubmit.addEventListener('click', function (e) {
+                e.preventDefault();
+                var frm = new FormData(formUser);
+                sendData(formUser.action, frm, function (data) {
+                    console.log(data);
+                });
+            });
+        })(document, window);
+    </script>
+{% endblock %}
