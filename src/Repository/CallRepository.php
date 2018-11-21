@@ -334,4 +334,31 @@ class CallRepository extends ServiceEntityRepository
         $stmt->execute(['seconds' => $this->minSeconds]);
         return $stmt->fetchAll();
     }
+
+    public function getNotAnsweredReport($params)
+    {
+        $dtStart = new \DateTime($params['start_date']);
+        $dtStart->setTime(0,0,0);
+        $dtEnd = new \DateTime($params['end_date']);
+        $dtEnd->setTime(23,59,59);
+        $dtStartStr = $dtStart->format('Y.m.d H:i:s');
+        $dtEndStr = $dtEnd->format('Y.m.d H:i:s');
+
+        $sql = "
+        select sum(1) summ,
+        sum(case when x.answer_time is null and x.call_duration between 50 and 55 then 1 else 0 end) s5, 
+        sum(case when x.answer_time is null and x.call_duration between 56 and 60 then 1 else 0 end) s10,
+        sum(case when x.answer_time is null and x.call_duration between 61 and 65 then 1 else 0 end) s15,
+        sum(case when x.answer_time is null and x.call_duration between 66 and 70 then 1 else 0 end) s20,
+        sum(case when x.answer_time is null and x.call_duration between 71 and 75 then 1 else 0 end) s25,
+    	sum(case when x.answer_time is null and x.call_duration > 76 then 1 else 0 end) s30p
+        FROM main.call x
+        WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and 
+        (x.answer_time is null and x.call_duration > :seconds)";
+
+        $connection = $this->getEntityManager()->getConnection();
+        $stmt = $connection->prepare($sql);
+        $stmt->execute(['seconds' => $this->minSeconds]);
+        return $stmt->fetchAll();
+    }
 }
