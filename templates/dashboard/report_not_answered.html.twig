@@ -87,8 +87,8 @@
                             {label: '10 s', data: object.graphic.data.s10, color: 'rgb(100, 170, 50)', backColor: 'rgba(100, 170, 50, 1)', yAxisID: 'y-axis-1'},
                             {label: '15 s', data: object.graphic.data.s15, color: 'rgb(150, 130, 50)', backColor: 'rgba(150, 130, 50, 0.8)', yAxisID: 'y-axis-1'},
                             {label: '20 s', data: object.graphic.data.s20, color: 'rgb(200, 90, 50)', backColor: 'rgba(200, 90, 50, 0.8)', yAxisID: 'y-axis-1'},
-                            {label: '25 s', data: object.graphic.data.s25, color: 'rgb(250, 90, 50)', backColor: 'rgba(250, 90, 50, 0.8)', yAxisID: 'y-axis-1'},
-                            {label: '30+ s', data: object.graphic.data.s30p, color: 'rgb(252, 50, 50)', backColor: 'rgba(252, 50, 50, 0.8)', yAxisID: 'y-axis-1'},
+                            {label: '25 s', data: object.graphic.data.s25, color: 'rgb(250, 50, 50)', backColor: 'rgba(250, 50, 50, 0.8)', yAxisID: 'y-axis-1'},
+                            {label: '30+ s', data: object.graphic.data.s30p, color: 'rgb(252, 30, 50)', backColor: 'rgba(252, 30, 50, 0.8)', yAxisID: 'y-axis-1'},
                         ]
                     };
 
@@ -120,33 +120,26 @@
                     fragment.appendChild(el ('td'));
                 }
 
-                var table =  el ('table', {}, [
+                var table =  el ('table', {class: 'u-full-width'}, [
                     el ('thead', {}, [
-                        el('th', {},  'Количество звонков, шт.'),
-                        //el('th', {},  'В рабочее время, шт.'),
-                        el('th', {},  'Отработанные, шт.'),
-                        el('th', {},  'Потерянные, шт.'),
-                        el('th', {},  'Макс. ожидающих, шт.'),
-                        el('th', {},  'Cр. время поднятия трубки, мин.'),
-                        el('th', {},  'Макс. время поднятия трубки, мин.'),
-                        el('th', {},  'Средняя продолжительность разговора, мин.'),
-                        el('th', {},  'Макс. продолжительность разговора, мин.'),
+                        el('th', {},  'Всего неотвеченных, шт.'),
 
-                        el('th', {},  'Общая продолжительность разговора, мин.')
+                        el('th', {class: 'sec5'},  '5 c, шт.'),
+                        el('th', {class: 'sec10'},  '10 c, шт.'),
+                        el('th', {class: 'sec15'},  '15 c, шт.'),
+                        el('th', {class: 'sec20'},  '20 с, шт.'),
+                        el('th', {class: 'sec25'},  '25 с, шт.'),
+                        el('th', {class: 'sec30'},  '30+ с, шт.')
                     ]),
-                    //el ('tbody', {}, [ fragment ])
                     el ('tbody', {}, [
                         el ('tr', {}, [
-                            el('td', {}, data[0]['number_of_records'].toString()),
-                            //el('td', {}, data[0]['work_time'].toString()),
-                            el('td', {}, data[0]['answered'].toString()),
-                            el('td', {}, data[0]['not_answered'].toString()),
-                            el('td', {}, (data[0]['max_waiting'] ? data[0]['max_waiting'] : 0).toString()),
-                            el('td', {}, data[0]['time_take_phone']),
-                            el('td', {}, data[0]['max_time_take_phone']),
-                            el('td', {}, data[0]['average_time']),
-                            el('td', {}, data[0]['max_time']),
-                            el('td', {}, data[0]['summ_duration'].toString()),
+                            el('td', {}, data[0]['summ'].toString()),
+                            el('td', {}, data[0]['s5'].toString()),
+                            el('td', {}, data[0]['s10'].toString()),
+                            el('td', {}, data[0]['s15'].toString()),
+                            el('td', {}, data[0]['s20'].toString()),
+                            el('td', {}, data[0]['s25'].toString()),
+                            el('td', {}, data[0]['s30p'].toString())
                         ])
                     ])
                 ]);
@@ -178,18 +171,7 @@
                             position: 'left',
                             id: 'y-axis-1',
                             stacked: true
-                        },
-                        // {
-                        //     ticks: { beginAtZero:true },
-                        //     type: 'linear',
-                        //     display: true,
-                        //     position: 'right',
-                        //     id: 'y-axis-2',
-                        //     gridLines: {
-                        //         drawOnChartArea: false,
-                        //     },
-                        //     stacked: true
-                        // }
+                        }
                     ];
                 var optionsGraphic = {
                     tooltips: {
