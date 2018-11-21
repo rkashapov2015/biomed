@@ -295,11 +295,11 @@ class CallRepository extends ServiceEntityRepository
                 sum(case when x.answer_time is null and x.call_duration between {$ranges[1][0]} and {$ranges[1][1]} then 1 else 0 end) s10,
                 sum(case when x.answer_time is null and x.call_duration between {$ranges[2][0]} and {$ranges[2][1]} then 1 else 0 end) s15,
                 sum(case when x.answer_time is null and x.call_duration between {$ranges[3][0]} and {$ranges[3][1]} then 1 else 0 end) s20,
-                sum(case when x.answer_time is null and x.call_duration between {$ranges[4][0]} and {$ranges[4][0]} then 1 else 0 end) s25,
-                sum(case when x.answer_time is null and x.call_duration > {$ranges[5][0]} then 1 else 0 end) s30p
+                sum(case when x.answer_time is null and x.call_duration between {$ranges[4][0]} and {$ranges[4][1]} then 1 else 0 end) s25,
+                sum(case when x.answer_time is null and x.call_duration >= {$ranges[5][0]} then 1 else 0 end) s30p
             FROM main.call x
             WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and 
-            ((x.answer_time is not null and x.call_duration > 6) or (x.answer_time is null and x.call_duration > :seconds))
+            x.answer_time is null and x.call_duration > :seconds
             group by date_trunc('hour', x.start_time)
             order by date_trunc('hour', x.start_time) asc
         )
@@ -325,13 +325,14 @@ class CallRepository extends ServiceEntityRepository
                 sum(case when x.answer_time is null and x.call_duration between {$ranges[1][0]} and {$ranges[1][1]} then 1 else 0 end) s10,
                 sum(case when x.answer_time is null and x.call_duration between {$ranges[2][0]} and {$ranges[2][1]} then 1 else 0 end) s15,
                 sum(case when x.answer_time is null and x.call_duration between {$ranges[3][0]} and {$ranges[3][1]} then 1 else 0 end) s20,
-                sum(case when x.answer_time is null and x.call_duration between {$ranges[4][0]} and {$ranges[4][0]} then 1 else 0 end) s25,
-                sum(case when x.answer_time is null and x.call_duration > {$ranges[5][0]} then 1 else 0 end) s30p 
+                sum(case when x.answer_time is null and x.call_duration between {$ranges[4][0]} and {$ranges[4][1]} then 1 else 0 end) s25,
+                sum(case when x.answer_time is null and x.call_duration >= {$ranges[5][0]} then 1 else 0 end) s30p 
         FROM main.call x
         WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and 
         ((x.answer_time is not null and x.call_duration > 1) or (x.answer_time is null and x.call_duration > :seconds))
         group by to_char(x.start_time, 'DD.MM.YYYY')
         order by to_char(x.start_time, 'DD.MM.YYYY')";
+
 
         if ($params['start_date'] == $params['end_date']) {
             $sql = $sqlForDay;
@@ -370,8 +371,8 @@ class CallRepository extends ServiceEntityRepository
         sum(case when x.answer_time is null and x.call_duration between {$ranges[1][0]} and {$ranges[1][1]} then 1 else 0 end) s10,
         sum(case when x.answer_time is null and x.call_duration between {$ranges[2][0]} and {$ranges[2][1]} then 1 else 0 end) s15,
         sum(case when x.answer_time is null and x.call_duration between {$ranges[3][0]} and {$ranges[3][1]} then 1 else 0 end) s20,
-        sum(case when x.answer_time is null and x.call_duration between {$ranges[4][0]} and {$ranges[4][0]} then 1 else 0 end) s25,
-        sum(case when x.answer_time is null and x.call_duration > {$ranges[5][0]} then 1 else 0 end) s30p
+        sum(case when x.answer_time is null and x.call_duration between {$ranges[4][0]} and {$ranges[4][1]} then 1 else 0 end) s25,
+        sum(case when x.answer_time is null and x.call_duration >= {$ranges[5][0]} then 1 else 0 end) s30p
         FROM main.call x
         WHERE x.start_time between '{$dtStartStr}' and '{$dtEndStr}' and x.trunk = 'BIOMED' and 
         (x.answer_time is null and x.call_duration > :seconds)";
