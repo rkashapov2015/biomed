@@ -208,6 +208,30 @@ button > i {
     /*max-width: 1200px;*/
 }
 
+.sec5 {
+    background-color: rgb(50, 210, 50);
+}
+
+.sec10 {
+    background-color: rgb(100, 170, 50);
+}
+
+.sec15 {
+    background-color: rgb(150, 130, 50);
+}
+
+.sec20 {
+    background-color: rgb(200, 90, 50);
+}
+
+.sec25 {
+    background-color: rgb(250, 50, 50);
+}
+
+.sec30 {
+    background-color: rgb(252, 30, 50);
+}
+
 @media (min-width: 550px) {
     /*.container {
         width: 100%;
