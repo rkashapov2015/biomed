@@ -154,7 +154,8 @@ class DashboardController extends AbstractController
 
         if ($request->isXmlHttpRequest()) {
 
-            $statData = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getDataForReport($_POST);
+            //$statData = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getDataForReport($_POST);
+            $statData = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getNotAnsweredReport($_POST);
             //$rows = $finder-
             $rows = $this->getDoctrine()->getRepository(Call::class, 'helloasterisk')->getNotAnsweredRange($_POST);
 
